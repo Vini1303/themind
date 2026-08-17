@@ -93,9 +93,9 @@ io.on('connection', socket=>{
     }
   });
 });
-app.get('/health',(_,res)=>res.json({ok:true}));
-httpServer.listen(3001,()=>console.log('MindSync server on :3001'));
-app.get('/health', (_, res) => res.json({ ok: true }));
+app.get('/health', (_, res) => {
+  res.json({ ok: true });
+});
 
 const PORT = process.env.PORT || 3001;
 
