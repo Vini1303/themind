@@ -34,6 +34,44 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* =========================================================
+   ANIMAÇÕES
+========================================================= */
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.08);
+    opacity: 0.45;
+  }
+}
+
+@keyframes cardGlow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes numberGlowPulse {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform:
+      translate(-50%, -45%)
+      scale(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    transform:
+      translate(-50%, -45%)
+      scale(1.08);
+  }
+}
+
+/* =========================================================
+   ESTRUTURA
+========================================================= */
+
 .landing,
 .game {
   position: relative;
@@ -75,6 +113,7 @@ button:disabled {
 
 .orb {
   position: absolute;
+
   width: 460px;
   height: 460px;
 
@@ -115,6 +154,7 @@ button:disabled {
   z-index: 1;
 
   width: min(92vw, 480px);
+
   margin: auto;
 
   padding:
@@ -156,9 +196,7 @@ button:disabled {
 
 .hero p {
   color: #9ba7b4;
-
   line-height: 1.65;
-
   margin-bottom: 30px;
 }
 
@@ -173,7 +211,6 @@ button:disabled {
   color: white;
 
   padding: 16px;
-
   margin: 7px 0;
 
   outline: none;
@@ -202,7 +239,6 @@ button:disabled {
   padding: 15px 18px;
 
   font-weight: 800;
-
   cursor: pointer;
 }
 
@@ -251,11 +287,8 @@ button:disabled {
 .link,
 .ghost {
   border: 0;
-
   background: transparent;
-
   color: #8bdcff;
-
   cursor: pointer;
 }
 
@@ -318,7 +351,8 @@ button:disabled {
 
   backdrop-filter: blur(15px);
 
-  box-shadow: 0 10px 35px #0005;
+  box-shadow:
+    0 10px 35px #0005;
 }
 
 .room-info {
@@ -333,7 +367,6 @@ button:disabled {
   color: #76818d;
 
   font-size: 8px;
-
   letter-spacing: 0.22em;
 }
 
@@ -341,7 +374,6 @@ button:disabled {
   color: #eef6fa;
 
   font-size: 16px;
-
   letter-spacing: 0.15em;
 }
 
@@ -377,7 +409,6 @@ button:disabled {
 .ghost {
   width: 38px;
   height: 38px;
-
   min-width: 38px;
 
   display: grid;
@@ -449,7 +480,6 @@ button:disabled {
 .avatar {
   width: 34px;
   height: 34px;
-
   min-width: 34px;
 
   display: grid;
@@ -487,7 +517,6 @@ button:disabled {
   font-size: 13px;
 
   text-overflow: ellipsis;
-
   white-space: nowrap;
 }
 
@@ -511,7 +540,6 @@ button:disabled {
   position: relative;
 
   width: min(1120px, 96vw);
-
   min-height: 680px;
 
   margin: 4px auto;
@@ -652,10 +680,6 @@ button:disabled {
   margin-top: 4px;
 }
 
-/* =========================================================
-   CARTA DE NÍVEL
-========================================================= */
-
 .level-area,
 .deck-area,
 .discard-area {
@@ -667,6 +691,10 @@ button:disabled {
   align-items: center;
   justify-content: center;
 }
+
+/* =========================================================
+   CARTA DE NÍVEL
+========================================================= */
 
 .level-card {
   width: 118px;
@@ -711,7 +739,6 @@ button:disabled {
 
 .level-card strong {
   font-family: "Space Grotesk", sans-serif;
-
   font-size: 70px;
   line-height: 0.95;
 }
@@ -737,7 +764,8 @@ button:disabled {
 
   letter-spacing: 0.18em;
 
-  text-shadow: 0 2px 4px #000;
+  text-shadow:
+    0 2px 4px #000;
 }
 
 /* =========================================================
@@ -766,7 +794,8 @@ button:disabled {
 
   border: 2px solid #d1d2c9;
 
-  box-shadow: 5px 8px 14px #0008;
+  box-shadow:
+    5px 8px 14px #0008;
 }
 
 .discard-under-1 {
@@ -836,7 +865,8 @@ button:disabled {
 
 .played-corner {
   position: absolute;
-  z-index: 4;
+
+  z-index: 7;
 
   font-family: "Space Grotesk", sans-serif;
 
@@ -867,34 +897,125 @@ button:disabled {
 
   align-items: center;
   justify-content: center;
+
+  isolation: isolate;
+}
+
+/* LUZ FORTE ATRÁS DO NÚMERO DA CARTA JOGADA */
+
+.played-art::before {
+  content: "";
+
+  position: absolute;
+
+  width: 140px;
+  height: 140px;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -45%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(235, 251, 255, 0.95) 7%,
+      rgba(172, 233, 255, 0.86) 14%,
+      rgba(82, 200, 255, 0.68) 25%,
+      rgba(30, 126, 255, 0.46) 39%,
+      rgba(17, 69, 195, 0.24) 55%,
+      rgba(8, 36, 110, 0.08) 68%,
+      transparent 78%
+    );
+
+  filter: blur(5px);
+
+  z-index: -2;
+
+  animation:
+    numberGlowPulse
+    2.8s
+    ease-in-out
+    infinite;
+}
+
+.played-art::after {
+  content: "";
+
+  position: absolute;
+
+  width: 85px;
+  height: 85px;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -47%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(222, 248, 255, 0.75) 18%,
+      rgba(92, 204, 255, 0.34) 45%,
+      transparent 72%
+    );
+
+  filter: blur(7px);
+
+  z-index: -1;
 }
 
 .played-art > span:not(.played-energy) {
-  color: #8edcff;
+  position: relative;
+
+  z-index: 5;
+
+  color: #ffffff;
 
   font-size: 18px;
 
   margin-bottom: 4px;
 
   text-shadow:
-    0 0 12px #61cfff;
+    0 0 4px #ffffff,
+    0 0 12px #70d8ff,
+    0 0 20px #288cff;
 }
 
 .played-art strong {
-  color: #f4f4ec;
+  position: relative;
+
+  z-index: 5;
+
+  color: #ffffff;
 
   font-family: "Space Grotesk", sans-serif;
 
   font-size: 60px;
+  font-weight: 700;
   line-height: 1;
 
   text-shadow:
-    0 3px 2px #000,
-    0 0 14px #7bdcff24;
+    0 2px 1px #000000,
+    0 4px 4px #000000cc,
+    0 0 3px #ffffff,
+    0 0 10px #dcf8ff,
+    0 0 22px #6dd8ff,
+    0 0 38px #258fff;
 }
 
 .played-energy {
   position: absolute;
+
+  z-index: 2;
 
   width: 180px;
   height: 38px;
@@ -933,7 +1054,7 @@ button:disabled {
   color: #8caaa0;
 }
 
-.empty-symbol {
+.empty-played-card .empty-symbol {
   margin-bottom: 10px;
 
   color: #8bd7c3;
@@ -1087,6 +1208,7 @@ button:disabled {
 
 .deck-star {
   position: relative;
+
   z-index: 2;
 
   margin-bottom: 8px;
@@ -1101,6 +1223,7 @@ button:disabled {
 
 .deck-pattern strong {
   position: relative;
+
   z-index: 2;
 
   color: #f3f5f4;
@@ -1120,7 +1243,6 @@ button:disabled {
 
 .deck-pattern strong span {
   display: block;
-
   color: #85dcff;
 }
 
@@ -1186,17 +1308,8 @@ button:disabled {
 
 .focus .pulse {
   color: #91dfcc;
-
   font-size: 54px;
-
   animation: pulse 1.8s infinite;
-}
-
-@keyframes pulse {
-  50% {
-    transform: scale(1.08);
-    opacity: 0.45;
-  }
 }
 
 /* =========================================================
@@ -1205,6 +1318,7 @@ button:disabled {
 
 .hand-section {
   position: relative;
+
   z-index: 5;
 
   width: 100%;
@@ -1237,7 +1351,6 @@ button:disabled {
 
 .hand-title small {
   color: #71837d;
-
   font-size: 9px;
 }
 
@@ -1314,6 +1427,7 @@ button:disabled {
   content: "";
 
   position: absolute;
+
   inset: -30%;
 
   opacity: 0.85;
@@ -1335,12 +1449,6 @@ button:disabled {
     14s
     linear
     infinite;
-}
-
-@keyframes cardGlow {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .number-card:not(:disabled):hover {
@@ -1372,7 +1480,8 @@ button:disabled {
 
 .card-corner {
   position: absolute;
-  z-index: 5;
+
+  z-index: 7;
 
   font-family: "Space Grotesk", sans-serif;
 
@@ -1380,6 +1489,9 @@ button:disabled {
   font-weight: 700;
 
   line-height: 1;
+
+  text-shadow:
+    0 1px 2px #000;
 }
 
 .card-corner-top {
@@ -1394,6 +1506,10 @@ button:disabled {
   transform: rotate(180deg);
 }
 
+/* =========================================================
+   ARTE DA CARTA + BRILHO
+========================================================= */
+
 .card-art {
   position: absolute;
 
@@ -1406,35 +1522,132 @@ button:disabled {
   justify-content: center;
 
   z-index: 3;
+
+  isolation: isolate;
+}
+
+/*
+  BRILHO PRINCIPAL ATRÁS DO NÚMERO
+*/
+
+.card-art::before {
+  content: "";
+
+  position: absolute;
+
+  width: 135px;
+  height: 135px;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -45%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(240, 252, 255, 0.98) 6%,
+      rgba(203, 242, 255, 0.88) 13%,
+      rgba(105, 215, 255, 0.72) 23%,
+      rgba(42, 148, 255, 0.48) 37%,
+      rgba(20, 82, 210, 0.27) 52%,
+      rgba(10, 43, 130, 0.1) 66%,
+      transparent 78%
+    );
+
+  filter: blur(5px);
+
+  z-index: -2;
+
+  animation:
+    numberGlowPulse
+    2.8s
+    ease-in-out
+    infinite;
+}
+
+/*
+  NÚCLEO BRANCO DO BRILHO
+*/
+
+.card-art::after {
+  content: "";
+
+  position: absolute;
+
+  width: 88px;
+  height: 88px;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -47%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.97) 0%,
+      rgba(229, 249, 255, 0.8) 20%,
+      rgba(119, 218, 255, 0.42) 45%,
+      transparent 72%
+    );
+
+  filter: blur(7px);
+
+  z-index: -1;
 }
 
 .card-art strong {
-  color: #f4f3ec;
+  position: relative;
+
+  z-index: 5;
+
+  color: #ffffff;
 
   font-family: "Space Grotesk", sans-serif;
 
   font-size: 57px;
+  font-weight: 700;
 
   line-height: 1;
 
   text-shadow:
-    0 3px 2px #000,
-    0 0 16px #84dcff1c;
+    0 2px 1px #000000,
+    0 4px 4px #000000cc,
+    0 0 3px #ffffff,
+    0 0 9px #d9f7ff,
+    0 0 20px #72d8ff,
+    0 0 36px #2b9eff;
 }
 
 .card-symbol {
+  position: relative;
+
+  z-index: 5;
+
   margin-bottom: 3px;
 
-  color: #91dfff;
+  color: #ffffff;
 
   font-size: 17px;
 
   text-shadow:
-    0 0 12px #67d2ff;
+    0 0 5px #ffffff,
+    0 0 12px #70d8ff,
+    0 0 20px #288cff;
 }
 
 .energy {
   position: absolute;
+
+  z-index: 2;
 
   width: 165px;
   height: 40px;
@@ -1456,25 +1669,26 @@ button:disabled {
   width: 102px;
   height: 102px;
 
-  border:
-    1px
-    solid
-    #ffffff11;
+  border: 1px solid #ffffff18;
 
   border-radius: 50%;
+
+  box-shadow:
+    0 0 18px #64d5ff15,
+    inset 0 0 15px #64d5ff10;
 }
 
 .card-action {
   position: absolute;
 
-  z-index: 5;
+  z-index: 8;
 
   left: 0;
   right: 0;
 
   bottom: 8px;
 
-  color: #7b8b94;
+  color: #8c9ba4;
 
   font-size: 6px;
   font-weight: 800;
@@ -1490,6 +1704,7 @@ button:disabled {
 
 .actions {
   position: relative;
+
   z-index: 5;
 
   width: 100%;
@@ -1722,8 +1937,6 @@ button:disabled {
     padding-bottom: 12px;
   }
 
-  /* HEADER */
-
   .game-header {
     min-height: 68px;
 
@@ -1741,7 +1954,6 @@ button:disabled {
 
   .room-info strong {
     font-size: 12px;
-
     letter-spacing: 0.08em;
   }
 
@@ -1755,27 +1967,21 @@ button:disabled {
     max-width: 210px;
 
     font-size: 9px;
-
     line-height: 1.15;
   }
 
   .ghost {
     width: 32px;
     height: 32px;
-
     min-width: 32px;
   }
-
-  /* JOGADORES */
 
   .players {
     gap: 7px;
 
     padding: 8px 9px;
 
-    scroll-snap-type:
-      x
-      proximity;
+    scroll-snap-type: x proximity;
   }
 
   .player {
@@ -1803,8 +2009,6 @@ button:disabled {
     font-size: 8px;
   }
 
-  /* MESA */
-
   .board {
     width: calc(100vw - 8px);
 
@@ -1827,7 +2031,6 @@ button:disabled {
 
   .board::after {
     inset: 5px;
-
     border-radius: 17px;
   }
 
@@ -1839,8 +2042,6 @@ button:disabled {
 
     font-size: 10px;
   }
-
-  /* PEÇAS DA MESA */
 
   .physical-table {
     width: 100%;
@@ -1864,13 +2065,11 @@ button:disabled {
     height: min(33vw, 118px);
 
     border-width: 2px;
-
     border-radius: 5px;
   }
 
   .level-card span {
     font-size: 6px;
-
     letter-spacing: 0.12em;
   }
 
@@ -1885,7 +2084,6 @@ button:disabled {
 
   .level-card small {
     margin-top: 5px;
-
     font-size: 6px;
   }
 
@@ -1915,6 +2113,16 @@ button:disabled {
         13vw,
         49px
       );
+  }
+
+  .played-art::before {
+    width: 105px;
+    height: 105px;
+  }
+
+  .played-art::after {
+    width: 67px;
+    height: 67px;
   }
 
   .played-corner {
@@ -1951,7 +2159,6 @@ button:disabled {
 
   .deck-star {
     margin-bottom: 4px;
-
     font-size: 16px;
   }
 
@@ -1961,7 +2168,6 @@ button:disabled {
 
   .deck-pattern small {
     bottom: 8px;
-
     font-size: 5px;
   }
 
@@ -1969,11 +2175,8 @@ button:disabled {
     margin-top: 7px;
 
     font-size: 5px;
-
     letter-spacing: 0.12em;
   }
-
-  /* PAINEL */
 
   .panel {
     margin-top: 10px;
@@ -1988,15 +2191,12 @@ button:disabled {
 
   .panel p {
     font-size: 11px;
-
     line-height: 1.5;
   }
 
   .focus .pulse {
     font-size: 45px;
   }
-
-  /* MÃO */
 
   .hand-section {
     margin-top: 9px;
@@ -2014,10 +2214,7 @@ button:disabled {
       5px
       10px;
 
-    scroll-snap-type:
-      x
-      mandatory;
-
+    scroll-snap-type: x mandatory;
     scroll-padding-inline: 6px;
   }
 
@@ -2041,7 +2238,6 @@ button:disabled {
       );
 
     border-width: 2px;
-
     border-radius: 6px;
 
     scroll-snap-align: center;
@@ -2064,6 +2260,16 @@ button:disabled {
       );
   }
 
+  .card-art::before {
+    width: 105px;
+    height: 105px;
+  }
+
+  .card-art::after {
+    width: 67px;
+    height: 67px;
+  }
+
   .card-corner {
     font-size: 13px;
   }
@@ -2079,7 +2285,6 @@ button:disabled {
 
   .card-action {
     bottom: 6px;
-
     font-size: 5px;
   }
 
@@ -2088,25 +2293,18 @@ button:disabled {
     font-size: 7px;
   }
 
-  /* BOTÃO DE ESTRELA */
-
   .actions button {
     min-height: 42px;
-
     margin-top: 4px;
   }
 
-  /* MODAL */
-
   .modal {
     align-items: end;
-
     padding: 8px;
   }
 
   .sheet {
     width: 100%;
-
     max-height: 92dvh;
 
     padding:
@@ -2126,7 +2324,6 @@ button:disabled {
 
   .sheet h2 {
     padding-right: 30px;
-
     font-size: 25px;
   }
 
@@ -2141,11 +2338,8 @@ button:disabled {
 
   .sheet > button:last-child {
     width: 100%;
-
     min-height: 46px;
   }
-
-  /* LANDING */
 
   .hero {
     width: 100%;
@@ -2167,13 +2361,11 @@ button:disabled {
 
   .hero p {
     margin-bottom: 22px;
-
     font-size: 13px;
   }
 
   .join {
     flex-direction: column;
-
     gap: 0;
   }
 
@@ -2196,13 +2388,11 @@ button:disabled {
 @media (max-width: 380px) {
   .stats {
     max-width: 170px;
-
     font-size: 8px;
   }
 
   .board {
     width: calc(100vw - 4px);
-
     border-width: 4px;
   }
 
@@ -2233,6 +2423,16 @@ button:disabled {
     font-size: 42px;
   }
 
+  .played-art::before {
+    width: 91px;
+    height: 91px;
+  }
+
+  .played-art::after {
+    width: 58px;
+    height: 58px;
+  }
+
   .deck-stack {
     width: 82px;
     height: 126px;
@@ -2260,6 +2460,16 @@ button:disabled {
 
   .card-art strong {
     font-size: 45px;
+  }
+
+  .card-art::before {
+    width: 95px;
+    height: 95px;
+  }
+
+  .card-art::after {
+    width: 60px;
+    height: 60px;
   }
 }
 
