@@ -1,2 +1,962 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@600;700&display=swap');
-*{box-sizing:border-box}body{margin:0;background:#080b10;color:#f7f8fa;font-family:Inter,system-ui,sans-serif;min-height:100vh}button,input{font:inherit}.landing,.game{min-height:100vh;background:radial-gradient(circle at 50% 20%,#182333 0,#0b1018 32%,#07090d 70%);position:relative;overflow:hidden}.orb{position:absolute;width:420px;height:420px;border:1px solid #8ad8ff33;border-radius:50%;left:50%;top:8%;transform:translateX(-50%);box-shadow:0 0 100px #57c7ff18,inset 0 0 80px #57c7ff10}.orb:after{content:"";position:absolute;inset:60px;border:1px solid #fff1;border-radius:50%}.hero{width:min(92vw,480px);margin:auto;padding:12vh 20px 50px;position:relative;text-align:center}.eyebrow{font-size:11px;letter-spacing:.26em;color:#86d9ff;font-weight:800}.hero h1{font-family:"Space Grotesk";font-size:64px;margin:18px 0 2px;letter-spacing:-.06em}.hero h1 span{color:#84d9ff}.hero p{color:#98a5b5;line-height:1.6;margin-bottom:32px}.hero input,.join input{width:100%;border:1px solid #263243;background:#0c121b;color:white;border-radius:14px;padding:16px;margin:7px 0;outline:none}.hero input:focus,.join input:focus{border-color:#6ed1ff}.primary,.join button,.panel button,.sheet button{border:0;border-radius:14px;padding:15px 18px;font-weight:800;cursor:pointer;background:#eaf9ff;color:#061019}.primary{width:100%;margin:7px 0;background:linear-gradient(135deg,#f3fcff,#77d5ff)}button:disabled{opacity:.4;cursor:not-allowed}.join{display:flex;gap:8px}.join input{letter-spacing:.15em;font-weight:800}.join button{margin:7px 0;background:#17212e;color:#ddecf4}.link,.ghost{border:0;background:transparent;color:#8fdcff;cursor:pointer;padding:12px}.error{background:#491b22;color:#ffb8c0;padding:10px;border-radius:10px;margin-top:8px}.game{padding-bottom:50px}.game header{height:86px;display:flex;align-items:center;justify-content:space-between;padding:16px clamp(16px,4vw,50px);border-bottom:1px solid #ffffff12;background:#070a0fbb;backdrop-filter:blur(12px);position:sticky;top:0;z-index:3}.game header small{display:block;color:#6e8096;font-size:9px;letter-spacing:.2em}.game header strong{letter-spacing:.16em}.stats{display:flex;gap:18px;font-weight:800;color:#cbd8e4}.stats span:first-child{color:#ff8e9b}.stats span:nth-child(2){color:#8bdcff}.ghost{border:1px solid #263445;border-radius:50%;width:38px;height:38px}.players{display:flex;gap:10px;padding:18px clamp(16px,4vw,50px);overflow:auto}.player{min-width:170px;display:flex;gap:10px;align-items:center;background:#0c121b;border:1px solid #1e2938;border-radius:14px;padding:10px 12px}.player.you{border-color:#6ed1ff66}.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#182a3a;color:#8edcff;font-weight:800}.player small{display:block;color:#718096;font-size:11px;margin-top:3px}.board{width:min(950px,94vw);min-height:65vh;margin:5px auto;border:1px solid #1b2634;border-radius:28px;background:radial-gradient(circle at center,#111b27 0,#0a0f16 45%,#080b10 80%);box-shadow:0 30px 100px #0008,inset 0 0 100px #68cbff09;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;position:relative}.status{position:absolute;top:20px;color:#8da0b3;font-size:13px;text-align:center}.pile{width:180px;height:250px;border:1px solid #6fd1ff44;border-radius:18px;background:linear-gradient(145deg,#0b121b,#101c27);box-shadow:0 20px 50px #0008,0 0 50px #6ed1ff0c;display:flex;flex-direction:column;align-items:center;justify-content:center}.pile small{font-size:9px;letter-spacing:.2em;color:#6f8497}.pile strong{font-family:"Space Grotesk";font-size:76px;margin-top:8px}.panel{width:min(420px,100%);text-align:center;margin-top:24px}.panel p{color:#8fa0b2;line-height:1.55}.focus .pulse{font-size:72px;color:#89dcff;animation:pulse 1.8s infinite}@keyframes pulse{50%{transform:scale(1.08);opacity:.5}}.hand{display:flex;gap:12px;max-width:100%;overflow:auto;padding:32px 10px 10px}.card{min-width:150px;height:210px;border-radius:18px;border:1px solid #8cdbff66;background:linear-gradient(160deg,#eafaff,#a8def5);color:#061019;box-shadow:0 16px 35px #0008;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.2s}.card:not(:disabled):hover{transform:translateY(-10px)}.card:disabled{filter:saturate(.2);transform:scale(.96)}.card span{font-family:"Space Grotesk";font-size:64px;font-weight:700}.card small{font-size:8px;letter-spacing:.12em}.actions button{margin-top:18px;border:1px solid #33485d;background:#0e1721;color:#aee5ff;border-radius:999px;padding:11px 18px;cursor:pointer}.modal{position:fixed;inset:0;background:#000b;display:grid;place-items:center;z-index:10;padding:20px}.sheet{width:min(620px,96vw);max-height:90vh;overflow:auto;background:#0d141d;border:1px solid #26384b;border-radius:24px;padding:28px;box-shadow:0 30px 100px #000;position:relative}.sheet h2{font-family:"Space Grotesk";font-size:30px}.sheet p,.sheet li{color:#a7b5c5;line-height:1.6}.sheet li{margin-bottom:9px}.sheet .x{position:absolute;right:16px;top:14px;background:transparent;color:white;font-size:25px;padding:6px}.sheet .note{background:#101c27;border:1px solid #22384b;border-radius:14px;padding:14px}.sheet>button:last-child{background:#8bdcff;margin-top:8px}@media(max-width:650px){.hero h1{font-size:52px}.stats{font-size:12px;gap:9px}.game header{padding:12px}.players{padding:12px}.board{min-height:70vh;padding:18px}.pile{width:140px;height:195px}.pile strong{font-size:58px}.hand{width:100%}.card{min-width:120px;height:170px}.card span{font-size:52px}}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #080b10;
+  color: #f7f8fa;
+  font-family: Inter, system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.landing,
+.game {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      #182333 0,
+      #0b1018 32%,
+      #07090d 70%
+    );
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* =========================
+   TELA INICIAL
+========================= */
+
+.orb {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  max-width: 90vw;
+  max-height: 90vw;
+  border: 1px solid #8ad8ff33;
+  border-radius: 50%;
+  left: 50%;
+  top: 8%;
+  transform: translateX(-50%);
+  box-shadow:
+    0 0 100px #57c7ff18,
+    inset 0 0 80px #57c7ff10;
+}
+
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: 60px;
+  border: 1px solid #ffffff11;
+  border-radius: 50%;
+}
+
+.hero {
+  width: min(92vw, 480px);
+  margin: auto;
+  padding: 12vh 20px 50px;
+  position: relative;
+  text-align: center;
+  z-index: 1;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  color: #86d9ff;
+  font-weight: 800;
+}
+
+.hero h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 64px;
+  margin: 18px 0 2px;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.hero h1 span {
+  color: #84d9ff;
+}
+
+.hero p {
+  color: #98a5b5;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.hero input,
+.join input {
+  width: 100%;
+  border: 1px solid #263243;
+  background: #0c121b;
+  color: white;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 7px 0;
+  outline: none;
+}
+
+.hero input:focus,
+.join input:focus {
+  border-color: #6ed1ff;
+}
+
+.primary,
+.join button,
+.panel button,
+.sheet button {
+  border: 0;
+  border-radius: 14px;
+  padding: 15px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #eaf9ff;
+  color: #061019;
+}
+
+.primary {
+  width: 100%;
+  margin: 7px 0;
+  background: linear-gradient(135deg, #f3fcff, #77d5ff);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.join {
+  display: flex;
+  gap: 8px;
+}
+
+.join input {
+  letter-spacing: 0.15em;
+  font-weight: 800;
+}
+
+.join button {
+  margin: 7px 0;
+  background: #17212e;
+  color: #ddecf4;
+  min-width: 92px;
+}
+
+.link,
+.ghost {
+  border: 0;
+  background: transparent;
+  color: #8fdcff;
+  cursor: pointer;
+  padding: 12px;
+}
+
+.error {
+  background: #491b22;
+  color: #ffb8c0;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+/* =========================
+   JOGO
+========================= */
+
+.game {
+  padding-bottom: 50px;
+}
+
+.game header {
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px clamp(16px, 4vw, 50px);
+  border-bottom: 1px solid #ffffff12;
+  background: #070a0fbb;
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+.game header > div:first-child {
+  flex-shrink: 0;
+}
+
+.game header small {
+  display: block;
+  color: #6e8096;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+}
+
+.game header strong {
+  letter-spacing: 0.16em;
+}
+
+.stats {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #cbd8e4;
+  text-align: center;
+}
+
+.stats span {
+  white-space: nowrap;
+}
+
+.stats span:first-child {
+  color: #ff8e9b;
+}
+
+.stats span:nth-child(2) {
+  color: #8bdcff;
+}
+
+.ghost {
+  border: 1px solid #263445;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  display: grid;
+  place-items: center;
+}
+
+/* =========================
+   JOGADORES
+========================= */
+
+.players {
+  display: flex;
+  gap: 10px;
+  padding: 18px clamp(16px, 4vw, 50px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.player {
+  min-width: 170px;
+  flex: 0 0 auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: #0c121b;
+  border: 1px solid #1e2938;
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.player.you {
+  border-color: #6ed1ff66;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #182a3a;
+  color: #8edcff;
+  font-weight: 800;
+}
+
+.player b {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player small {
+  display: block;
+  color: #718096;
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+/* =========================
+   TABULEIRO
+========================= */
+
+.board {
+  width: min(950px, 94vw);
+  min-height: 65vh;
+  margin: 5px auto;
+  border: 1px solid #1b2634;
+  border-radius: 28px;
+  background:
+    radial-gradient(
+      circle at center,
+      #111b27 0,
+      #0a0f16 45%,
+      #080b10 80%
+    );
+  box-shadow:
+    0 30px 100px #0008,
+    inset 0 0 100px #68cbff09;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 62px 28px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.status {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  color: #8da0b3;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.pile {
+  width: 180px;
+  height: 250px;
+  flex-shrink: 0;
+  border: 1px solid #6fd1ff44;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #0b121b, #101c27);
+  box-shadow:
+    0 20px 50px #0008,
+    0 0 50px #6ed1ff0c;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pile small {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: #6f8497;
+}
+
+.pile strong {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 76px;
+  margin-top: 8px;
+  line-height: 1;
+}
+
+.panel {
+  width: min(420px, 100%);
+  text-align: center;
+  margin-top: 24px;
+}
+
+.panel h2 {
+  margin-bottom: 8px;
+}
+
+.panel p {
+  color: #8fa0b2;
+  line-height: 1.55;
+}
+
+.focus .pulse {
+  font-size: 72px;
+  color: #89dcff;
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.08);
+    opacity: 0.5;
+  }
+}
+
+/* =========================
+   CARTAS
+========================= */
+
+.hand {
+  display: flex;
+  gap: 12px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 32px 10px 10px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.card {
+  min-width: 150px;
+  width: 150px;
+  height: 210px;
+  flex: 0 0 auto;
+
+  border-radius: 18px;
+  border: 1px solid #8cdbff66;
+  background: linear-gradient(160deg, #eafaff, #a8def5);
+  color: #061019;
+
+  box-shadow: 0 16px 35px #0008;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    filter 0.2s;
+}
+
+.card:not(:disabled):hover {
+  transform: translateY(-10px);
+}
+
+.card:disabled {
+  filter: saturate(0.2);
+  transform: scale(0.96);
+}
+
+.card span {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.card small {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  margin-top: 8px;
+}
+
+.actions {
+  width: 100%;
+  text-align: center;
+}
+
+.actions button {
+  margin-top: 18px;
+  border: 1px solid #33485d;
+  background: #0e1721;
+  color: #aee5ff;
+  border-radius: 999px;
+  padding: 11px 18px;
+  cursor: pointer;
+}
+
+/* =========================
+   MODAL / TUTORIAL
+========================= */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: #000b;
+  display: grid;
+  place-items: center;
+  z-index: 10;
+  padding: 20px;
+}
+
+.sheet {
+  width: min(620px, 96vw);
+  max-height: 90vh;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: #0d141d;
+  border: 1px solid #26384b;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 30px 100px #000;
+  position: relative;
+}
+
+.sheet h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 30px;
+}
+
+.sheet p,
+.sheet li {
+  color: #a7b5c5;
+  line-height: 1.6;
+}
+
+.sheet li {
+  margin-bottom: 9px;
+}
+
+.sheet .x {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  background: transparent;
+  color: white;
+  font-size: 25px;
+  padding: 6px;
+}
+
+.sheet .note {
+  background: #101c27;
+  border: 1px solid #22384b;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.sheet > button:last-child {
+  background: #8bdcff;
+  margin-top: 8px;
+}
+
+/* =========================
+   TABLETS
+========================= */
+
+@media (max-width: 900px) {
+  .board {
+    width: 96vw;
+    min-height: 68vh;
+    padding: 58px 22px 24px;
+  }
+
+  .stats {
+    gap: 12px;
+    font-size: 13px;
+  }
+
+  .players {
+    padding: 14px;
+  }
+
+  .card {
+    min-width: 135px;
+    width: 135px;
+    height: 190px;
+  }
+
+  .card span {
+    font-size: 58px;
+  }
+
+  .pile {
+    width: 155px;
+    height: 215px;
+  }
+
+  .pile strong {
+    font-size: 64px;
+  }
+}
+
+/* =========================
+   CELULARES
+========================= */
+
+@media (max-width: 650px) {
+  .landing,
+  .game {
+    min-height: 100dvh;
+  }
+
+  /* Página inicial */
+
+  .hero {
+    width: 100%;
+    padding:
+      max(56px, 8vh)
+      18px
+      36px;
+  }
+
+  .eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.19em;
+  }
+
+  .hero h1 {
+    font-size: clamp(42px, 14vw, 56px);
+    margin-top: 14px;
+  }
+
+  .hero p {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .orb {
+    width: 90vw;
+    height: 90vw;
+    max-width: 360px;
+    max-height: 360px;
+    top: 5%;
+  }
+
+  .orb::after {
+    inset: 14vw;
+  }
+
+  .hero input,
+  .join input,
+  .primary,
+  .join button {
+    min-height: 50px;
+  }
+
+  .join {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .join button {
+    width: 100%;
+  }
+
+  /* Cabeçalho */
+
+  .game {
+    padding-bottom: 20px;
+  }
+
+  .game header {
+    min-height: 70px;
+    height: auto;
+    padding:
+      max(8px, env(safe-area-inset-top))
+      10px
+      8px;
+
+    gap: 6px;
+  }
+
+  .game header strong {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+  }
+
+  .game header small {
+    font-size: 8px;
+  }
+
+  .stats {
+    gap: 5px 8px;
+    font-size: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    line-height: 1.2;
+  }
+
+  .ghost {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    padding: 0;
+  }
+
+  /* Jogadores */
+
+  .players {
+    gap: 8px;
+    padding: 10px 12px;
+    scroll-snap-type: x proximity;
+  }
+
+  .player {
+    min-width: 145px;
+    max-width: 170px;
+    padding: 8px 10px;
+    scroll-snap-align: start;
+  }
+
+  .avatar {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+  }
+
+  .player b {
+    font-size: 12px;
+  }
+
+  .player small {
+    font-size: 10px;
+  }
+
+  /* Tabuleiro */
+
+  .board {
+    width: calc(100vw - 16px);
+    min-height: calc(100dvh - 160px);
+    margin: 4px auto;
+    border-radius: 20px;
+
+    padding:
+      54px
+      12px
+      calc(18px + env(safe-area-inset-bottom));
+
+    justify-content: center;
+  }
+
+  .status {
+    top: 14px;
+    left: 12px;
+    right: 12px;
+    font-size: 11px;
+  }
+
+  .pile {
+    width: min(42vw, 145px);
+    height: min(58vw, 200px);
+    min-height: 160px;
+    border-radius: 16px;
+  }
+
+  .pile strong {
+    font-size: clamp(48px, 16vw, 62px);
+  }
+
+  .pile small {
+    font-size: 8px;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 360px;
+    margin-top: 18px;
+  }
+
+  .panel h2 {
+    font-size: 21px;
+    margin-bottom: 8px;
+  }
+
+  .panel p {
+    font-size: 13px;
+  }
+
+  .focus .pulse {
+    font-size: 58px;
+  }
+
+  /* Cartas */
+
+  .hand {
+    width: calc(100vw - 34px);
+    max-width: 100%;
+    padding: 24px 4px 10px;
+    gap: 8px;
+
+    justify-content: flex-start;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 8px;
+  }
+
+  .card {
+    min-width: min(34vw, 120px);
+    width: min(34vw, 120px);
+    height: min(48vw, 170px);
+    min-height: 145px;
+    border-radius: 15px;
+    scroll-snap-align: center;
+  }
+
+  .card:not(:disabled):hover {
+    transform: none;
+  }
+
+  .card:not(:disabled):active {
+    transform: scale(0.96);
+  }
+
+  .card span {
+    font-size: clamp(42px, 14vw, 54px);
+  }
+
+  .card small {
+    font-size: 7px;
+    letter-spacing: 0.08em;
+  }
+
+  .actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .actions button {
+    width: 100%;
+    max-width: 320px;
+    min-height: 46px;
+    margin-top: 14px;
+  }
+
+  /* Tutorial */
+
+  .modal {
+    padding: 10px;
+    align-items: end;
+  }
+
+  .sheet {
+    width: 100%;
+    max-height: 92dvh;
+    border-radius: 20px 20px 12px 12px;
+    padding:
+      22px
+      18px
+      calc(22px + env(safe-area-inset-bottom));
+  }
+
+  .sheet h2 {
+    font-size: 26px;
+    padding-right: 30px;
+  }
+
+  .sheet p,
+  .sheet li {
+    font-size: 13px;
+  }
+
+  .sheet ol {
+    padding-left: 22px;
+  }
+
+  .sheet > button:last-child {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+
+/* =========================
+   CELULARES PEQUENOS
+========================= */
+
+@media (max-width: 380px) {
+  .hero {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .hero h1 {
+    font-size: 43px;
+  }
+
+  .stats {
+    font-size: 9px;
+  }
+
+  .game header {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .player {
+    min-width: 135px;
+  }
+
+  .board {
+    width: calc(100vw - 10px);
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .pile {
+    width: 130px;
+    height: 180px;
+  }
+
+  .hand {
+    width: calc(100vw - 22px);
+  }
+
+  .card {
+    min-width: 108px;
+    width: 108px;
+    height: 152px;
+    min-height: 152px;
+  }
+
+  .card span {
+    font-size: 46px;
+  }
+}
+
+/* =========================
+   TELAS MUITO BAIXAS
+   ex.: celular deitado
+========================= */
+
+@media (max-height: 600px) and (max-width: 900px) {
+  .players {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .board {
+    min-height: 440px;
+  }
+
+  .pile {
+    width: 115px;
+    height: 160px;
+  }
+
+  .pile strong {
+    font-size: 48px;
+  }
+
+  .hand {
+    padding-top: 16px;
+  }
+
+  .card {
+    min-width: 105px;
+    width: 105px;
+    height: 145px;
+  }
+
+  .card span {
+    font-size: 44px;
+  }
+}
