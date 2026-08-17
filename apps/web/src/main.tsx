@@ -24,6 +24,10 @@ type ResourceType =
   | 'life'
   | 'double';
 
+type ViewerRole =
+  | 'player'
+  | 'spectator';
+
 type Player = {
   id: string;
   name: string;
@@ -33,11 +37,22 @@ type Player = {
   resourceVote: boolean;
 };
 
+type Spectator = {
+  id: string;
+  name: string;
+};
+
 type Room = {
   code: string;
   hostId: string;
 
   players: Player[];
+  spectators: Spectator[];
+
+  viewerRole: ViewerRole;
+
+  queuePosition:
+    number | null;
 
   level: number;
   maxLevel: number;
@@ -74,23 +89,25 @@ const POWERS: PowerInfo[] = [
     title: 'Estrela Ninja',
     shortTitle: 'NINJA',
     description:
-      'Remove a menor carta da mão de cada jogador. Todos precisam concordar antes do uso.',
+      'Remove a menor carta da mão de cada jogador. Todos precisam concordar.',
   },
+
   {
     type: 'life',
     symbol: '♥',
     title: 'Vida Extra',
     shortTitle: 'VIDA',
     description:
-      'Recupera 1 vida para a equipe. Só pode ser usada depois que uma vida tiver sido perdida.',
+      'Recupera 1 vida para a equipe. Todos precisam concordar.',
   },
+
   {
     type: 'double',
     symbol: '◈',
     title: 'Chance Dupla',
     shortTitle: 'CHANCE',
     description:
-      'Protege a equipe contra o próximo erro. O nível recomeça, mas nenhuma vida é perdida.',
+      'Protege a equipe contra o próximo erro. O nível reinicia, mas nenhuma vida é perdida.',
   },
 ];
 
@@ -109,28 +126,23 @@ function Tutorial({
           ×
         </button>
 
-        <h2>Como jogar</h2>
+        <h2>
+          Como jogar
+        </h2>
 
         <p>
-          Vocês são uma única
-          equipe. O objetivo é
-          jogar todas as cartas
-          numéricas em ordem
+          A equipe precisa jogar
+          todas as cartas em ordem
           crescente, sem turnos e
-          sem revelar os números.
+          sem revelar seus números.
         </p>
 
         <ol>
           <li>
-            No nível 1, cada
+            No nível 1 cada
             jogador recebe 1 carta.
-            No nível 2, recebe 2, e
-            assim por diante.
-          </li>
-
-          <li>
-            Todos ficam prontos e
-            então jogam sem turnos.
+            Depois 2, 3 e assim
+            por diante.
           </li>
 
           <li>
@@ -140,51 +152,35 @@ function Tutorial({
           </li>
 
           <li>
-            Se uma carta for jogada
-            enquanto existir uma
-            menor em qualquer mão,
-            ocorre um erro.
+            Se existir uma carta
+            menor na mão de alguém,
+            a jogada é um erro.
           </li>
 
           <li>
-            Normalmente um erro
-            custa 1 vida e o nível
-            inteiro recomeça com
-            novas cartas.
+            Um erro normalmente
+            custa uma vida e
+            reinicia o nível.
           </li>
 
           <li>
             Se todas as vidas
             acabarem, a partida
-            inteira volta para o
-            nível 1.
+            volta ao nível 1.
           </li>
 
           <li>
-            Cada partida começa com
-            uma Estrela Ninja, uma
-            Vida Extra e uma Chance
-            Dupla.
+            Estrela Ninja, Vida
+            Extra e Chance Dupla
+            precisam da aprovação
+            dos jogadores.
           </li>
 
           <li>
-            Qualquer carta especial
-            só é usada depois que
-            todos os jogadores
-            confirmarem.
-          </li>
-
-          <li>
-            A Chance Dupla protege
-            contra o próximo erro:
-            o nível recomeça sem
-            perder vida.
-          </li>
-
-          <li>
-            A equipe vence quando
-            completar todos os
-            níveis.
+            Quem entrar durante uma
+            partida fica na fila e
+            pode assistir até a
+            próxima partida.
           </li>
         </ol>
 
@@ -201,9 +197,57 @@ function Tutorial({
           4 vidas.
         </p>
 
-        <button onClick={close}>
+        <button
+          onClick={close}
+        >
           Entendi
         </button>
+      </div>
+    </div>
+  );
+}
+
+function ConfirmLeaveModal({
+  close,
+  confirm,
+}: {
+  close: () => void;
+  confirm: () => void;
+}) {
+  return (
+    <div className="modal">
+      <div className="leave-sheet">
+        <div className="leave-icon">
+          ↩
+        </div>
+
+        <h2>
+          Sair da sala?
+        </h2>
+
+        <p>
+          Você voltará para o menu
+          principal. Se estiver
+          jogando, sua vaga ficará
+          livre somente para a
+          próxima partida.
+        </p>
+
+        <div className="leave-actions">
+          <button
+            className="leave-cancel"
+            onClick={close}
+          >
+            Continuar aqui
+          </button>
+
+          <button
+            className="leave-confirm"
+            onClick={confirm}
+          >
+            Sair da sala
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -223,7 +267,6 @@ function NumberCard({
       className="number-card"
       disabled={disabled}
       onClick={onClick}
-      aria-label={`Carta ${value}`}
     >
       <span className="card-corner card-corner-top">
         {value}
@@ -238,7 +281,9 @@ function NumberCard({
           ✦
         </span>
 
-        <strong>{value}</strong>
+        <strong>
+          {value}
+        </strong>
       </div>
 
       <span className="card-corner card-corner-bottom">
@@ -251,6 +296,38 @@ function NumberCard({
           : 'TOQUE PARA JOGAR'}
       </span>
     </button>
+  );
+}
+
+function SpectatorCard({
+  value,
+}: {
+  value: number;
+}) {
+  return (
+    <div className="number-card spectator-number-card">
+      <span className="card-corner card-corner-top">
+        {value}
+      </span>
+
+      <div className="card-art">
+        <span className="energy energy-one" />
+        <span className="energy energy-two" />
+        <span className="energy energy-three" />
+
+        <span className="card-symbol">
+          ✦
+        </span>
+
+        <strong>
+          {value}
+        </strong>
+      </div>
+
+      <span className="card-corner card-corner-bottom">
+        {value}
+      </span>
+    </div>
   );
 }
 
@@ -285,7 +362,9 @@ function PlayedCard({
         <span className="played-energy played-energy-one" />
         <span className="played-energy played-energy-two" />
 
-        <span>✦</span>
+        <span>
+          ✦
+        </span>
 
         <strong>
           {value}
@@ -414,9 +493,10 @@ function PowerModal({
   const [
     selected,
     setSelected,
-  ] = useState<ResourceType | null>(
-    room.resourceProposal
-  );
+  ] =
+    useState<ResourceType | null>(
+      room.resourceProposal
+    );
 
   useEffect(() => {
     if (
@@ -444,7 +524,8 @@ function PowerModal({
   const selectedPower =
     POWERS.find(
       (power) =>
-        power.type === selected
+        power.type ===
+        selected
     );
 
   const proposalPower =
@@ -460,15 +541,15 @@ function PowerModal({
         player.resourceVote
     ).length;
 
-  const hasProposal =
-    !!room.resourceProposal;
-
   const maxLives =
-    room.players.length === 2
+    room.players.length <= 2
       ? 2
       : room.players.length === 3
         ? 3
         : 4;
+
+  const hasProposal =
+    !!room.resourceProposal;
 
   return (
     <div className="modal power-modal">
@@ -490,10 +571,9 @@ function PowerModal({
           </h2>
 
           <p>
-            Escolha uma carta. O
-            uso só acontece quando
-            todos os jogadores
-            confirmarem.
+            Escolha uma carta.
+            Todos os jogadores
+            precisam aprovar.
           </p>
         </div>
 
@@ -505,11 +585,11 @@ function PowerModal({
                   power.type
                 ];
 
-              const isSelected =
+              const selectedNow =
                 selected ===
                 power.type;
 
-              const isActive =
+              const active =
                 power.type ===
                   'double' &&
                 room.doubleChanceActive;
@@ -524,10 +604,10 @@ function PowerModal({
                     (!available
                       ? ' power-used'
                       : '') +
-                    (isSelected
+                    (selectedNow
                       ? ' selected'
                       : '') +
-                    (isActive
+                    (active
                       ? ' power-active'
                       : '')
                   }
@@ -553,14 +633,14 @@ function PowerModal({
                     }
                   </strong>
 
-                  {isActive && (
+                  {active && (
                     <small className="active-label">
                       ATIVA
                     </small>
                   )}
 
                   {!available &&
-                    !isActive && (
+                    !active && (
                       <small className="used-label">
                         USADA
                       </small>
@@ -582,8 +662,7 @@ function PowerModal({
 
               <div>
                 <small>
-                  VOTAÇÃO EM
-                  ANDAMENTO
+                  VOTAÇÃO EM ANDAMENTO
                 </small>
 
                 <h3>
@@ -595,9 +674,9 @@ function PowerModal({
                 <p>
                   {votes}/
                   {
-                    room.players
-                      .length
-                  } jogadores
+                    room.players.length
+                  }{' '}
+                  jogadores
                   confirmaram.
                 </p>
               </div>
@@ -635,10 +714,9 @@ function PowerModal({
           room.lives >=
             maxLives && (
             <div className="power-warning">
-              A equipe já está com
-              o máximo de vidas.
-              Essa carta não pode
-              ser usada agora.
+              A equipe já está
+              com o máximo de
+              vidas.
             </div>
           )}
 
@@ -654,7 +732,7 @@ function PowerModal({
                   )
                 }
               >
-                Cancelar votação
+                Cancelar
               </button>
 
               <button
@@ -670,7 +748,7 @@ function PowerModal({
                 }
               >
                 {me?.resourceVote
-                  ? 'Você já confirmou'
+                  ? 'Você confirmou'
                   : 'Confirmar uso'}
               </button>
             </>
@@ -702,6 +780,7 @@ function PowerModal({
                     {
                       code:
                         room.code,
+
                       resource:
                         selected,
                     }
@@ -715,6 +794,117 @@ function PowerModal({
         </div>
       </div>
     </div>
+  );
+}
+
+function SpectatorPanel({
+  room,
+}: {
+  room: Room;
+}) {
+  return (
+    <section className="spectator-section">
+      <div className="spectator-warning">
+        <div className="spectator-eye">
+          ◉
+        </div>
+
+        <div>
+          <small>
+            VOCÊ ESTÁ ASSISTINDO
+          </small>
+
+          <h2>
+            Partida em andamento
+          </h2>
+
+          <p>
+            Aguarde o fim desta
+            partida. Quando o jogo
+            voltar ao nível 1 você
+            entrará automaticamente,
+            se houver vaga.
+          </p>
+
+          <div className="queue-position">
+            Posição na fila:{' '}
+            <strong>
+              {room.queuePosition ??
+                '—'}º
+            </strong>
+          </div>
+        </div>
+      </div>
+
+      <div className="spectator-hands-title">
+        <span>
+          CARTAS DOS JOGADORES
+        </span>
+
+        <small>
+          Visíveis apenas para quem
+          está assistindo
+        </small>
+      </div>
+
+      <div className="spectator-hands">
+        {room.players.map(
+          (player) => (
+            <div
+              className="spectator-player-hand"
+              key={
+                player.id
+              }
+            >
+              <div className="spectator-player-name">
+                <span className="avatar">
+                  {player.name[0]?.toUpperCase()}
+                </span>
+
+                <div>
+                  <strong>
+                    {
+                      player.name
+                    }
+                  </strong>
+
+                  <small>
+                    {
+                      player.hand.length
+                    }{' '}
+                    carta(s)
+                  </small>
+                </div>
+              </div>
+
+              <div className="spectator-card-row">
+                {player.hand.length ===
+                0 ? (
+                  <span className="spectator-empty">
+                    Sem cartas
+                  </span>
+                ) : (
+                  player.hand.map(
+                    (
+                      value
+                    ) => (
+                      <SpectatorCard
+                        key={
+                          value
+                        }
+                        value={
+                          value
+                        }
+                      />
+                    )
+                  )
+                )}
+              </div>
+            </div>
+          )
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -752,6 +942,11 @@ function App() {
   ] = useState(false);
 
   const [
+    leaveModal,
+    setLeaveModal,
+  ] = useState(false);
+
+  const [
     err,
     setErr,
   ] = useState('');
@@ -764,11 +959,16 @@ function App() {
       setErr('');
 
       /*
-       * Se uma votação terminou,
-       * não fecha forçadamente:
-       * o usuário pode visualizar
-       * as sombras das cartas.
+       * Se saiu da fila e virou
+       * jogador, fecha qualquer
+       * modal antigo.
        */
+      if (
+        newRoom.viewerRole ===
+        'player'
+      ) {
+        setPowerModal(false);
+      }
     };
 
     const onError = (
@@ -776,6 +976,17 @@ function App() {
     ) => {
       setErr(message);
     };
+
+    const onLeftRoom =
+      () => {
+        setRoom(null);
+
+        setPowerModal(false);
+
+        setLeaveModal(false);
+
+        setJoinCode('');
+      };
 
     socket.on(
       'room',
@@ -787,6 +998,11 @@ function App() {
       onError
     );
 
+    socket.on(
+      'leftRoom',
+      onLeftRoom
+    );
+
     return () => {
       socket.off(
         'room',
@@ -796,6 +1012,11 @@ function App() {
       socket.off(
         'errorMessage',
         onError
+      );
+
+      socket.off(
+        'leftRoom',
+        onLeftRoom
       );
     };
   }, []);
@@ -850,8 +1071,7 @@ function App() {
               event
             ) =>
               setName(
-                event.target
-                  .value
+                event.target.value
               )
             }
             onBlur={
@@ -955,6 +1175,10 @@ function App() {
     );
   }
 
+  const isSpectator =
+    room.viewerRole ===
+    'spectator';
+
   const lastPlayed =
     room.pile.at(-1);
 
@@ -981,6 +1205,13 @@ function App() {
             ♥ {room.lives}
           </span>
 
+          {isSpectator && (
+            <span className="watch-stat">
+              ◉ FILA{' '}
+              {room.queuePosition}
+            </span>
+          )}
+
           {room.doubleChanceActive && (
             <span className="double-active-stat">
               ◈ PROTEGIDO
@@ -993,14 +1224,36 @@ function App() {
           </span>
         </div>
 
-        <button
-          className="ghost"
-          onClick={() =>
-            setTutorial(true)
-          }
-        >
-          ?
-        </button>
+        <div className="header-actions">
+          <button
+            className="leave-room-button"
+            onClick={() =>
+              setLeaveModal(
+                true
+              )
+            }
+            aria-label="Sair da sala"
+          >
+            <span>
+              ↩
+            </span>
+
+            <small>
+              SAIR
+            </small>
+          </button>
+
+          <button
+            className="ghost"
+            onClick={() =>
+              setTutorial(
+                true
+              )
+            }
+          >
+            ?
+          </button>
+        </div>
       </header>
 
       <section className="players">
@@ -1052,6 +1305,37 @@ function App() {
             </div>
           )
         )}
+
+        {room.spectators.map(
+          (
+            spectator,
+            index
+          ) => (
+            <div
+              className="player spectator-chip"
+              key={
+                spectator.id
+              }
+            >
+              <span className="avatar">
+                ◉
+              </span>
+
+              <div className="player-data">
+                <b>
+                  {
+                    spectator.name
+                  }
+                </b>
+
+                <small>
+                  Fila{' '}
+                  {index + 1}
+                </small>
+              </div>
+            </div>
+          )
+        )}
       </section>
 
       <section className="board">
@@ -1061,60 +1345,60 @@ function App() {
           {room.message}
         </div>
 
-        {(room.status ===
-          'playing' ||
-          room.status ===
-            'focus') && (
-          <button
-            className={
-              'power-dock' +
-              (!hasPower &&
-              !room.resourceProposal
-                ? ' dock-empty'
-                : '')
-            }
-            disabled={
-              !hasPower &&
-              !room.resourceProposal
-            }
-            onClick={() =>
-              setPowerModal(
-                true
-              )
-            }
-            aria-label="Abrir cartas especiais"
-          >
-            <MiniPowerCard
-              power={
-                POWERS[0]
+        {!isSpectator &&
+          (room.status ===
+            'playing' ||
+            room.status ===
+              'focus') && (
+            <button
+              className={
+                'power-dock' +
+                (!hasPower &&
+                !room.resourceProposal
+                  ? ' dock-empty'
+                  : '')
               }
-              available={
-                room.starCardAvailable
+              disabled={
+                !hasPower &&
+                !room.resourceProposal
               }
-            />
+              onClick={() =>
+                setPowerModal(
+                  true
+                )
+              }
+            >
+              <MiniPowerCard
+                power={
+                  POWERS[0]
+                }
+                available={
+                  room.starCardAvailable
+                }
+              />
 
-            <MiniPowerCard
-              power={
-                POWERS[1]
-              }
-              available={
-                room.lifeCardAvailable
-              }
-            />
+              <MiniPowerCard
+                power={
+                  POWERS[1]
+                }
+                available={
+                  room.lifeCardAvailable
+                }
+              />
 
-            <MiniPowerCard
-              power={
-                POWERS[2]
-              }
-              available={
-                room.doubleChanceAvailable
-              }
-              active={
-                room.doubleChanceActive
-              }
-            />
-          </button>
-        )}
+              <MiniPowerCard
+                power={
+                  POWERS[2]
+                }
+                available={
+                  room.doubleChanceAvailable
+                }
+                active={
+                  room.doubleChanceActive
+                }
+              />
+            </button>
+          )}
 
         {room.doubleChanceActive && (
           <div className="double-protection-banner">
@@ -1137,7 +1421,9 @@ function App() {
 
         <div className="physical-table">
           <LevelCard
-            level={room.level}
+            level={
+              room.level
+            }
             maxLevel={
               room.maxLevel
             }
@@ -1161,205 +1447,197 @@ function App() {
           <DeckStack />
         </div>
 
-        {room.status ===
-          'lobby' && (
-          <div className="panel">
-            <h2>
-              Sala criada
-            </h2>
-
-            <p>
-              Compartilhe o
-              código{' '}
-              <b>
-                {room.code}
-              </b>
-              .
-              <br />
-
-              Quando houver de
-              2 a 4 jogadores,
-              o anfitrião
-              poderá iniciar.
-            </p>
-
-            {room.hostId ===
-              socket.id && (
-              <button
-                className="primary"
-                disabled={
-                  room.players
-                    .length < 2
-                }
-                onClick={() =>
-                  socket.emit(
-                    'start',
-                    room.code
-                  )
-                }
-              >
-                Iniciar partida
-              </button>
-            )}
-          </div>
-        )}
-
-        {room.status ===
-          'focus' && (
-          <div className="panel focus">
-            <div className="pulse">
-              ◎
-            </div>
-
-            <h2>
-              Sincronizem
-            </h2>
-
-            <p>
-              Observe suas
-              cartas. Quando
-              estiver preparado,
-              marque como pronto.
-            </p>
-
-            <button
-              className="primary"
-              disabled={
-                !!me?.ready
-              }
-              onClick={() =>
-                socket.emit(
-                  'ready',
-                  room.code
-                )
-              }
-            >
-              {me?.ready
-                ? 'Aguardando os outros...'
-                : 'Estou pronto'}
-            </button>
-          </div>
-        )}
-
-        {room.status ===
-          'playing' && (
+        {isSpectator ? (
+          <SpectatorPanel
+            room={room}
+          />
+        ) : (
           <>
-            <div className="hand-section">
-              <div className="hand-title">
-                <span>
-                  SUA MÃO
-                </span>
+            {room.status ===
+              'lobby' && (
+              <div className="panel">
+                <h2>
+                  Sala criada
+                </h2>
 
-                <small>
-                  {me?.hand
-                    .length ||
-                    0}{' '}
-                  carta(s)
-                </small>
-              </div>
+                <p>
+                  Compartilhe o
+                  código{' '}
+                  <b>
+                    {
+                      room.code
+                    }
+                  </b>
+                  .
+                </p>
 
-              <div className="hand">
-                {me?.hand.map(
-                  (
-                    value,
-                    index
-                  ) => (
-                    <NumberCard
-                      key={
-                        value
-                      }
-                      value={
-                        value
-                      }
-                      disabled={
-                        index !==
-                          0 ||
-                        !!room.resourceProposal
-                      }
-                      onClick={() =>
-                        socket.emit(
-                          'play',
-                          {
-                            code:
-                              room.code,
-                            value,
-                          }
-                        )
-                      }
-                    />
-                  )
+                {room.hostId ===
+                  socket.id && (
+                  <button
+                    className="primary"
+                    disabled={
+                      room.players
+                        .length <
+                      2
+                    }
+                    onClick={() =>
+                      socket.emit(
+                        'start',
+                        room.code
+                      )
+                    }
+                  >
+                    Iniciar partida
+                  </button>
                 )}
               </div>
-            </div>
-
-            <div className="special-action-mobile">
-              <button
-                disabled={
-                  !hasPower &&
-                  !room.resourceProposal
-                }
-                onClick={() =>
-                  setPowerModal(
-                    true
-                  )
-                }
-              >
-                ✦ ♥ ◈ Cartas
-                especiais
-              </button>
-            </div>
-          </>
-        )}
-
-        {(room.status ===
-          'won' ||
-          room.status ===
-            'lost') && (
-          <div className="panel result-panel">
-            <h2>
-              {room.status ===
-              'won'
-                ? 'Vocês conseguiram!'
-                : 'Fim de jogo'}
-            </h2>
-
-            <p>
-              {room.message}
-            </p>
-
-            {room.hostId ===
-              socket.id && (
-              <button
-                className="primary"
-                onClick={() =>
-                  socket.emit(
-                    'start',
-                    room.code
-                  )
-                }
-              >
-                Jogar novamente
-              </button>
             )}
-          </div>
+
+            {room.status ===
+              'focus' && (
+              <div className="panel focus">
+                <div className="pulse">
+                  ◎
+                </div>
+
+                <h2>
+                  Sincronizem
+                </h2>
+
+                <p>
+                  Observe suas
+                  cartas e marque
+                  quando estiver
+                  preparado.
+                </p>
+
+                <button
+                  className="primary"
+                  disabled={
+                    !!me?.ready
+                  }
+                  onClick={() =>
+                    socket.emit(
+                      'ready',
+                      room.code
+                    )
+                  }
+                >
+                  {me?.ready
+                    ? 'Aguardando os outros...'
+                    : 'Estou pronto'}
+                </button>
+              </div>
+            )}
+
+            {room.status ===
+              'playing' && (
+              <>
+                <div className="hand-section">
+                  <div className="hand-title">
+                    <span>
+                      SUA MÃO
+                    </span>
+
+                    <small>
+                      {me?.hand
+                        .length ??
+                        0}{' '}
+                      carta(s)
+                    </small>
+                  </div>
+
+                  <div className="hand">
+                    {me?.hand.map(
+                      (
+                        value,
+                        index
+                      ) => (
+                        <NumberCard
+                          key={
+                            value
+                          }
+                          value={
+                            value
+                          }
+                          disabled={
+                            index !==
+                              0 ||
+                            !!room.resourceProposal
+                          }
+                          onClick={() =>
+                            socket.emit(
+                              'play',
+                              {
+                                code:
+                                  room.code,
+
+                                value,
+                              }
+                            )
+                          }
+                        />
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="special-action-mobile">
+                  <button
+                    disabled={
+                      !hasPower &&
+                      !room.resourceProposal
+                    }
+                    onClick={() =>
+                      setPowerModal(
+                        true
+                      )
+                    }
+                  >
+                    ✦ ♥ ◈ Cartas
+                    especiais
+                  </button>
+                </div>
+              </>
+            )}
+          </>
         )}
       </section>
 
       {tutorial && (
         <Tutorial
           close={() =>
-            setTutorial(false)
+            setTutorial(
+              false
+            )
           }
         />
       )}
 
-      {powerModal && (
-        <PowerModal
-          room={room}
-          me={me}
+      {powerModal &&
+        !isSpectator && (
+          <PowerModal
+            room={room}
+            me={me}
+            close={() =>
+              setPowerModal(
+                false
+              )
+            }
+          />
+        )}
+
+      {leaveModal && (
+        <ConfirmLeaveModal
           close={() =>
-            setPowerModal(
+            setLeaveModal(
               false
+            )
+          }
+          confirm={() =>
+            socket.emit(
+              'leaveRoom',
+              room.code
             )
           }
         />

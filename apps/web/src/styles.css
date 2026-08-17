@@ -2530,3 +2530,598 @@ button:disabled {
     }
   }
 }
+/* =========================================================
+   SAIR DA SALA + FILA DE ESPECTADORES
+========================================================= */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.leave-room-button {
+  min-height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 0 11px;
+
+  border: 1px solid #493338;
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #1d1215,
+      #0c090a
+    );
+
+  color: #ff9da8;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 15px #0005;
+}
+
+.leave-room-button span {
+  font-size: 16px;
+}
+
+.leave-room-button small {
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.leave-room-button:hover {
+  border-color: #ff7584;
+
+  background:
+    #29161a;
+}
+
+.watch-stat {
+  color: #7ee4d5;
+
+  text-shadow:
+    0 0 10px #40d8c060;
+}
+
+/* =========================================================
+   CONFIRMAÇÃO PARA SAIR
+========================================================= */
+
+.leave-sheet {
+  width: min(420px, 94vw);
+
+  padding: 28px;
+
+  border: 1px solid #4a3438;
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #171113,
+      #090708
+    );
+
+  text-align: center;
+
+  box-shadow:
+    0 30px 100px #000;
+}
+
+.leave-icon {
+  width: 58px;
+  height: 58px;
+
+  margin: 0 auto 14px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #813e49;
+  border-radius: 50%;
+
+  background: #39181e;
+
+  color: #ff9aa7;
+
+  font-size: 29px;
+}
+
+.leave-sheet h2 {
+  margin: 0 0 8px;
+
+  font-family:
+    "Space Grotesk",
+    sans-serif;
+
+  font-size: 25px;
+}
+
+.leave-sheet p {
+  margin: 0;
+
+  color: #a99b9e;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.leave-actions {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap: 9px;
+
+  margin-top: 22px;
+}
+
+.leave-actions button {
+  min-height: 46px;
+
+  border: 0;
+  border-radius: 12px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.leave-cancel {
+  background: #16191a;
+
+  color: #aeb9b6;
+}
+
+.leave-confirm {
+  background:
+    linear-gradient(
+      135deg,
+      #ffabb4,
+      #e25a6c
+    );
+
+  color: #27070d;
+}
+
+/* =========================================================
+   ESPECTADOR
+========================================================= */
+
+.spectator-chip {
+  border-color:
+    #68d8c86b;
+
+  background:
+    linear-gradient(
+      145deg,
+      #10221e,
+      #08110f
+    );
+}
+
+.spectator-chip .avatar {
+  background:
+    #14372f;
+
+  color: #79e4d1;
+}
+
+.spectator-section {
+  position: relative;
+
+  z-index: 7;
+
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  margin-top: 16px;
+}
+
+.spectator-warning {
+  width:
+    min(620px, 94%);
+
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 17px;
+
+  border:
+    1px solid #70dbc66b;
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0d2b24d9,
+      #071813e6
+    );
+
+  box-shadow:
+    0 12px 35px #0006,
+    0 0 28px #50d1b315;
+}
+
+.spectator-eye {
+  min-width: 58px;
+
+  color: #7de4d0;
+
+  font-size: 43px;
+
+  text-align: center;
+
+  text-shadow:
+    0 0 18px #53e1c7;
+}
+
+.spectator-warning small {
+  color: #76d6c3;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  letter-spacing: 0.21em;
+}
+
+.spectator-warning h2 {
+  margin: 4px 0 5px;
+
+  font-family:
+    "Space Grotesk",
+    sans-serif;
+
+  font-size: 20px;
+}
+
+.spectator-warning p {
+  margin: 0;
+
+  color: #a3bcb6;
+
+  font-size: 11px;
+
+  line-height: 1.55;
+}
+
+.queue-position {
+  display: inline-block;
+
+  margin-top: 10px;
+
+  padding: 6px 10px;
+
+  border:
+    1px solid #69c7b54a;
+
+  border-radius: 999px;
+
+  background: #102e27;
+
+  color: #9edacd;
+
+  font-size: 10px;
+}
+
+.queue-position strong {
+  color: white;
+}
+
+/* =========================================================
+   CARTAS DOS JOGADORES PARA ESPECTADOR
+========================================================= */
+
+.spectator-hands-title {
+  margin-top: 20px;
+
+  text-align: center;
+}
+
+.spectator-hands-title span {
+  display: block;
+
+  color: #d9e6e2;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+}
+
+.spectator-hands-title small {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #748a84;
+
+  font-size: 8px;
+}
+
+.spectator-hands {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 13px;
+
+  margin-top: 14px;
+}
+
+.spectator-player-hand {
+  width: 100%;
+
+  padding: 12px;
+
+  border:
+    1px solid #ffffff0e;
+
+  border-radius: 15px;
+
+  background: #071a15a8;
+}
+
+.spectator-player-name {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  margin-bottom: 10px;
+}
+
+.spectator-player-name strong {
+  display: block;
+
+  font-size: 12px;
+}
+
+.spectator-player-name small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #769088;
+
+  font-size: 8px;
+}
+
+.spectator-card-row {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 5px 2px;
+
+  overflow-x: auto;
+
+  -webkit-overflow-scrolling:
+    touch;
+
+  scrollbar-width: thin;
+}
+
+.spectator-number-card {
+  min-width: 86px !important;
+  width: 86px !important;
+  height: 121px !important;
+
+  pointer-events: none;
+
+  opacity: 1 !important;
+
+  filter: none !important;
+
+  cursor: default !important;
+}
+
+.spectator-number-card .card-art strong {
+  font-size: 37px;
+}
+
+.spectator-number-card .card-corner {
+  font-size: 10px;
+}
+
+.spectator-number-card .card-art::before {
+  width: 82px;
+  height: 82px;
+}
+
+.spectator-number-card .card-art::after {
+  width: 52px;
+  height: 52px;
+}
+
+.spectator-number-card .energy {
+  width: 90px;
+}
+
+.spectator-number-card .energy-three {
+  width: 54px;
+  height: 54px;
+}
+
+.spectator-number-card .card-symbol {
+  font-size: 11px;
+}
+
+.spectator-empty {
+  padding: 15px;
+
+  color: #71857f;
+
+  font-size: 10px;
+
+  font-style: italic;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+  .header-actions {
+    gap: 4px;
+  }
+
+  .leave-room-button {
+    width: 34px;
+    height: 34px;
+
+    min-height: 34px;
+
+    padding: 0;
+
+    border-radius: 50%;
+  }
+
+  .leave-room-button span {
+    font-size: 15px;
+  }
+
+  .leave-room-button small {
+    display: none;
+  }
+
+  .spectator-warning {
+    width: calc(100% - 12px);
+
+    gap: 10px;
+
+    padding: 12px;
+  }
+
+  .spectator-eye {
+    min-width: 38px;
+
+    font-size: 29px;
+  }
+
+  .spectator-warning h2 {
+    font-size: 16px;
+  }
+
+  .spectator-warning p {
+    font-size: 9px;
+  }
+
+  .queue-position {
+    margin-top: 7px;
+
+    font-size: 8px;
+  }
+
+  .spectator-hands-title {
+    margin-top: 14px;
+  }
+
+  .spectator-player-hand {
+    padding: 9px;
+  }
+
+  .spectator-card-row {
+    justify-content:
+      flex-start;
+
+    scroll-snap-type:
+      x mandatory;
+  }
+
+  .spectator-number-card {
+    min-width:
+      76px !important;
+
+    width:
+      76px !important;
+
+    height:
+      108px !important;
+
+    scroll-snap-align:
+      start;
+  }
+
+  .spectator-number-card .card-art strong {
+    font-size: 32px;
+  }
+
+  .spectator-number-card .card-art::before {
+    width: 73px;
+    height: 73px;
+  }
+
+  .spectator-number-card .card-art::after {
+    width: 46px;
+    height: 46px;
+  }
+
+  /*
+   * Como espectador pode haver
+   * várias mãos, permitimos que
+   * a mesa cresça verticalmente.
+   */
+  .board:has(.spectator-section) {
+    justify-content:
+      flex-start;
+
+    min-height:
+      calc(
+        100dvh
+        - 125px
+      );
+
+    overflow: visible;
+  }
+
+  .leave-sheet {
+    width: 100%;
+
+    padding:
+      22px
+      17px
+      calc(
+        20px +
+        env(
+          safe-area-inset-bottom
+        )
+      );
+
+    border-radius:
+      20px
+      20px
+      10px
+      10px;
+  }
+
+  .leave-actions {
+    grid-template-columns:
+      1fr;
+  }
+}

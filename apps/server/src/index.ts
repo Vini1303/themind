@@ -16,7 +16,16 @@ const io = new Server(httpServer, {
   },
 });
 
-type ResourceType = 'star' | 'life' | 'double';
+type ResourceType =
+  | 'star'
+  | 'life'
+  | 'double';
+
+type RoomStatus =
+  | 'lobby'
+  | 'focus'
+  | 'playing'
+  | 'won';
 
 type Player = {
   id: string;
@@ -26,17 +35,18 @@ type Player = {
   resourceVote: boolean;
 };
 
-type RoomStatus =
-  | 'lobby'
-  | 'focus'
-  | 'playing'
-  | 'won'
-  | 'lost';
+type Spectator = {
+  id: string;
+  name: string;
+  joinedAt: number;
+};
 
 type Room = {
   code: string;
   hostId: string;
+
   players: Player[];
+  spectators: Spectator[];
 
   level: number;
   maxLevel: number;
@@ -54,10 +64,12 @@ type Room = {
 
   doubleChanceActive: boolean;
 
-  resourceProposal: ResourceType | null;
+  resourceProposal:
+    ResourceType | null;
 };
 
-const rooms = new Map<string, Room>();
+const rooms =
+  new Map<string, Room>();
 
 function generateRoomCode() {
   const chars =
@@ -68,7 +80,8 @@ function generateRoomCode() {
     () =>
       chars[
         Math.floor(
-          Math.random() * chars.length
+          Math.random() *
+            chars.length
         )
       ]
   ).join('');
@@ -77,7 +90,7 @@ function generateRoomCode() {
 function setupByPlayers(
   playerCount: number
 ) {
-  if (playerCount === 2) {
+  if (playerCount <= 2) {
     return {
       maxLevel: 12,
       lives: 2,
@@ -97,19 +110,27 @@ function setupByPlayers(
   };
 }
 
-function shuffle<T>(array: T[]) {
+function shuffle<T>(
+  array: T[]
+) {
   const result = [...array];
 
   for (
-    let i = result.length - 1;
+    let i =
+      result.length - 1;
     i > 0;
     i--
   ) {
-    const j = Math.floor(
-      Math.random() * (i + 1)
-    );
+    const j =
+      Math.floor(
+        Math.random() *
+          (i + 1)
+      );
 
-    [result[i], result[j]] = [
+    [
+      result[i],
+      result[j],
+    ] = [
       result[j],
       result[i],
     ];
@@ -118,48 +139,143 @@ function shuffle<T>(array: T[]) {
   return result;
 }
 
-function resetVotes(room: Room) {
-  room.players.forEach((player) => {
-    player.resourceVote = false;
-  });
+function resetVotes(
+  room: Room
+) {
+  room.players.forEach(
+    (player) => {
+      player.resourceVote =
+        false;
+    }
+  );
 }
 
-function publicRoom(
+function publicRoomForPlayer(
   room: Room,
   viewerId: string
 ) {
   return {
     ...room,
 
-    players: room.players.map(
-      (player) => ({
-        ...player,
+    viewerRole:
+      'player' as const,
 
-        hand:
-          player.id === viewerId
-            ? player.hand
-            : [],
+    queuePosition: null,
 
-        handCount:
-          player.hand.length,
-      })
-    ),
+    players:
+      room.players.map(
+        (player) => ({
+          ...player,
+
+          hand:
+            player.id ===
+            viewerId
+              ? player.hand
+              : [],
+
+          handCount:
+            player.hand.length,
+        })
+      ),
+
+    spectators:
+      room.spectators.map(
+        (spectator) => ({
+          id: spectator.id,
+          name: spectator.name,
+        })
+      ),
   };
 }
 
-function emitRoom(room: Room) {
-  room.players.forEach((player) => {
-    io.to(player.id).emit(
-      'room',
-      publicRoom(
-        room,
-        player.id
-      )
+function publicRoomForSpectator(
+  room: Room,
+  spectatorId: string
+) {
+  const index =
+    room.spectators.findIndex(
+      (spectator) =>
+        spectator.id ===
+        spectatorId
     );
-  });
+
+  return {
+    ...room,
+
+    /*
+     * Espectador recebe as
+     * mãos abertas para poder
+     * acompanhar a partida.
+     */
+    players:
+      room.players.map(
+        (player) => ({
+          ...player,
+
+          hand: player.hand,
+
+          handCount:
+            player.hand.length,
+        })
+      ),
+
+    spectators:
+      room.spectators.map(
+        (spectator) => ({
+          id: spectator.id,
+          name: spectator.name,
+        })
+      ),
+
+    viewerRole:
+      'spectator' as const,
+
+    queuePosition:
+      index >= 0
+        ? index + 1
+        : null,
+  };
 }
 
-function deal(room: Room) {
+function emitRoom(
+  room: Room
+) {
+  room.players.forEach(
+    (player) => {
+      io.to(player.id).emit(
+        'room',
+        publicRoomForPlayer(
+          room,
+          player.id
+        )
+      );
+    }
+  );
+
+  room.spectators.forEach(
+    (spectator) => {
+      io.to(
+        spectator.id
+      ).emit(
+        'room',
+        publicRoomForSpectator(
+          room,
+          spectator.id
+        )
+      );
+    }
+  );
+}
+
+function deal(
+  room: Room
+) {
+  if (
+    room.players.length === 0
+  ) {
+    return;
+  }
+
   const config =
     setupByPlayers(
       room.players.length
@@ -171,29 +287,35 @@ function deal(room: Room) {
   const deck = shuffle(
     Array.from(
       { length: 100 },
-      (_, index) => index + 1
+      (_, index) =>
+        index + 1
     )
   );
 
   room.players.forEach(
     (player) => {
-      player.hand = deck
-        .splice(
-          0,
-          room.level
-        )
-        .sort(
-          (a, b) => a - b
-        );
+      player.hand =
+        deck
+          .splice(
+            0,
+            room.level
+          )
+          .sort(
+            (a, b) =>
+              a - b
+          );
 
       player.ready = false;
-      player.resourceVote = false;
+
+      player.resourceVote =
+        false;
     }
   );
 
   room.pile = [];
 
-  room.resourceProposal = null;
+  room.resourceProposal =
+    null;
 
   room.status = 'focus';
 
@@ -201,9 +323,50 @@ function deal(room: Room) {
     `Nível ${room.level}: todos precisam ficar prontos.`;
 }
 
-function startNewGame(
+function promoteSpectators(
   room: Room
 ) {
+  while (
+    room.players.length < 4 &&
+    room.spectators.length > 0
+  ) {
+    const spectator =
+      room.spectators.shift();
+
+    if (!spectator) {
+      break;
+    }
+
+    room.players.push({
+      id: spectator.id,
+      name: spectator.name,
+      hand: [],
+      ready: false,
+      resourceVote: false,
+    });
+  }
+
+  if (
+    room.players.length > 0 &&
+    !room.players.some(
+      (player) =>
+        player.id ===
+        room.hostId
+    )
+  ) {
+    room.hostId =
+      room.players[0].id;
+  }
+}
+
+function startNewGame(
+  room: Room,
+  promoteQueue = true
+) {
+  if (promoteQueue) {
+    promoteSpectators(room);
+  }
+
   const config =
     setupByPlayers(
       room.players.length
@@ -217,42 +380,78 @@ function startNewGame(
   room.lives =
     config.lives;
 
-  /*
-   * Toda nova partida começa
-   * com exatamente uma carta
-   * de cada recurso.
-   */
-  room.starCardAvailable = true;
-  room.lifeCardAvailable = true;
-  room.doubleChanceAvailable = true;
+  room.starCardAvailable =
+    true;
 
-  room.doubleChanceActive = false;
+  room.lifeCardAvailable =
+    true;
 
-  room.resourceProposal = null;
+  room.doubleChanceAvailable =
+    true;
+
+  room.doubleChanceActive =
+    false;
+
+  room.resourceProposal =
+    null;
 
   resetVotes(room);
 
   deal(room);
 }
 
-function restartGameAfterLoss(
+function restartAfterLoss(
   room: Room
 ) {
-  startNewGame(room);
+  const waitingBefore =
+    room.spectators.length;
+
+  startNewGame(
+    room,
+    true
+  );
+
+  const entered =
+    waitingBefore -
+    room.spectators.length;
 
   room.message =
-    'Todas as vidas acabaram. A partida recomeçou no nível 1 com as três cartas especiais restauradas.';
+    entered > 0
+      ? `A equipe perdeu todas as vidas. Nova partida no nível 1. ${entered} jogador(es) da fila entraram automaticamente.`
+      : 'A equipe perdeu todas as vidas. Nova partida iniciada no nível 1.';
+}
+
+function startAfterVictory(
+  room: Room
+) {
+  const waitingBefore =
+    room.spectators.length;
+
+  startNewGame(
+    room,
+    true
+  );
+
+  const entered =
+    waitingBefore -
+    room.spectators.length;
+
+  room.message =
+    entered > 0
+      ? `Partida concluída! Nova partida iniciada no nível 1 com ${entered} jogador(es) da fila.`
+      : 'Partida concluída! Uma nova partida começou no nível 1.';
 }
 
 function restartLevelAfterMistake(
   room: Room,
-  protectedByDoubleChance = false
+  protectedByDoubleChance =
+    false
 ) {
-  room.pile = [];
-
   deal(room);
 
-  if (protectedByDoubleChance) {
+  if (
+    protectedByDoubleChance
+  ) {
     room.message =
       `◈ Chance Dupla protegeu a equipe! Nenhuma vida foi perdida. O nível ${room.level} recomeçou.`;
 
@@ -263,26 +462,32 @@ function restartLevelAfterMistake(
     `Erro! A equipe perdeu 1 vida. O nível ${room.level} recomeçou desde o início.`;
 }
 
-function checkLevel(room: Room) {
+function checkLevel(
+  room: Room
+) {
   const everyoneFinished =
     room.players.every(
       (player) =>
-        player.hand.length === 0
+        player.hand.length ===
+        0
     );
 
   if (!everyoneFinished) {
     return;
   }
 
+  /*
+   * Terminou o último nível.
+   * Em vez de deixar a sala
+   * parada, começa a próxima
+   * partida no nível 1 e coloca
+   * a fila automaticamente.
+   */
   if (
     room.level >=
     room.maxLevel
   ) {
-    room.status = 'won';
-
-    room.message =
-      'Sincronia completa! A equipe venceu.';
-
+    startAfterVictory(room);
     return;
   }
 
@@ -294,11 +499,15 @@ function checkLevel(room: Room) {
 function resourceName(
   resource: ResourceType
 ) {
-  if (resource === 'star') {
+  if (
+    resource === 'star'
+  ) {
     return 'Estrela Ninja';
   }
 
-  if (resource === 'life') {
+  if (
+    resource === 'life'
+  ) {
     return 'Vida Extra';
   }
 
@@ -309,26 +518,39 @@ function isResourceAvailable(
   room: Room,
   resource: ResourceType
 ) {
-  if (resource === 'star') {
-    return room.starCardAvailable;
+  if (
+    resource === 'star'
+  ) {
+    return (
+      room.starCardAvailable
+    );
   }
 
-  if (resource === 'life') {
-    return room.lifeCardAvailable;
+  if (
+    resource === 'life'
+  ) {
+    return (
+      room.lifeCardAvailable
+    );
   }
 
-  return room.doubleChanceAvailable;
+  return (
+    room.doubleChanceAvailable
+  );
 }
 
 function executeResource(
   room: Room,
   resource: ResourceType
 ) {
-  room.resourceProposal = null;
+  room.resourceProposal =
+    null;
 
   resetVotes(room);
 
-  if (resource === 'star') {
+  if (
+    resource === 'star'
+  ) {
     if (
       !room.starCardAvailable
     ) {
@@ -338,13 +560,14 @@ function executeResource(
     room.starCardAvailable =
       false;
 
-    const discarded: number[] =
-      [];
+    const discarded:
+      number[] = [];
 
     room.players.forEach(
       (player) => {
         if (
-          player.hand.length === 0
+          player.hand.length ===
+          0
         ) {
           return;
         }
@@ -361,20 +584,23 @@ function executeResource(
     );
 
     discarded.sort(
-      (a, b) => a - b
+      (a, b) =>
+        a - b
     );
 
     room.message =
       discarded.length > 0
         ? `✦ Estrela Ninja usada. Menores cartas removidas: ${discarded.join(', ')}.`
-        : '✦ Estrela Ninja usada. Não havia cartas para remover.';
+        : '✦ Estrela Ninja usada.';
 
     checkLevel(room);
 
     return;
   }
 
-  if (resource === 'life') {
+  if (
+    resource === 'life'
+  ) {
     if (
       !room.lifeCardAvailable
     ) {
@@ -386,17 +612,12 @@ function executeResource(
         room.players.length
       );
 
-    /*
-     * A vida extra só é consumida
-     * se realmente puder recuperar
-     * uma vida.
-     */
     if (
       room.lives >=
       config.lives
     ) {
       room.message =
-        '♥ A equipe já está com o máximo de vidas. A carta Vida Extra não foi gasta.';
+        '♥ A equipe já está com o máximo de vidas.';
 
       return;
     }
@@ -425,7 +646,96 @@ function executeResource(
     true;
 
   room.message =
-    '◈ Chance Dupla ativada! O próximo erro da equipe não fará perder uma vida.';
+    '◈ Chance Dupla ativada! O próximo erro não fará perder uma vida.';
+}
+
+function removeFromRoom(
+  room: Room,
+  socketId: string
+) {
+  const playerIndex =
+    room.players.findIndex(
+      (player) =>
+        player.id ===
+        socketId
+    );
+
+  const spectatorIndex =
+    room.spectators.findIndex(
+      (spectator) =>
+        spectator.id ===
+        socketId
+    );
+
+  if (
+    playerIndex >= 0
+  ) {
+    room.players.splice(
+      playerIndex,
+      1
+    );
+  }
+
+  if (
+    spectatorIndex >= 0
+  ) {
+    room.spectators.splice(
+      spectatorIndex,
+      1
+    );
+  }
+
+  if (
+    room.hostId ===
+    socketId
+  ) {
+    if (
+      room.players.length >
+      0
+    ) {
+      room.hostId =
+        room.players[0].id;
+    } else {
+      room.hostId = '';
+    }
+  }
+
+  return (
+    playerIndex >= 0 ||
+    spectatorIndex >= 0
+  );
+}
+
+function findRoomBySocket(
+  socketId: string
+) {
+  for (
+    const room of
+    rooms.values()
+  ) {
+    const isPlayer =
+      room.players.some(
+        (player) =>
+          player.id ===
+          socketId
+      );
+
+    const isSpectator =
+      room.spectators.some(
+        (spectator) =>
+          spectator.id ===
+          socketId
+      );
+
+    if (
+      isPlayer ||
+      isSpectator
+    ) {
+      return room;
+    }
+  }
+
+  return undefined;
 }
 
 io.on(
@@ -442,6 +752,35 @@ io.on(
       }: {
         name: string;
       }) => {
+        /*
+         * Caso o jogador já
+         * estivesse em outra sala.
+         */
+        const oldRoom =
+          findRoomBySocket(
+            socket.id
+          );
+
+        if (oldRoom) {
+          removeFromRoom(
+            oldRoom,
+            socket.id
+          );
+
+          if (
+            oldRoom.players
+              .length === 0 &&
+            oldRoom.spectators
+              .length === 0
+          ) {
+            rooms.delete(
+              oldRoom.code
+            );
+          } else {
+            emitRoom(oldRoom);
+          }
+        }
+
         let roomCode =
           generateRoomCode();
 
@@ -474,7 +813,10 @@ io.on(
             },
           ],
 
+          spectators: [],
+
           level: 1,
+
           maxLevel: 12,
 
           lives: 2,
@@ -537,42 +879,90 @@ io.on(
           return;
         }
 
-        if (
-          room.status !==
-          'lobby'
-        ) {
-          socket.emit(
-            'errorMessage',
-            'A partida já começou.'
+        const oldRoom =
+          findRoomBySocket(
+            socket.id
           );
+
+        if (
+          oldRoom &&
+          oldRoom.code !==
+            room.code
+        ) {
+          removeFromRoom(
+            oldRoom,
+            socket.id
+          );
+
+          emitRoom(oldRoom);
+        }
+
+        const alreadyPlayer =
+          room.players.find(
+            (player) =>
+              player.id ===
+              socket.id
+          );
+
+        const alreadySpectator =
+          room.spectators.find(
+            (spectator) =>
+              spectator.id ===
+              socket.id
+          );
+
+        if (
+          alreadyPlayer ||
+          alreadySpectator
+        ) {
+          emitRoom(room);
+          return;
+        }
+
+        /*
+         * Se ainda está no lobby
+         * e há vaga, entra direto.
+         */
+        if (
+          room.status ===
+            'lobby' &&
+          room.players.length <
+            4
+        ) {
+          room.players.push({
+            id: socket.id,
+
+            name:
+              name ||
+              'Jogador',
+
+            hand: [],
+
+            ready: false,
+
+            resourceVote:
+              false,
+          });
+
+          emitRoom(room);
 
           return;
         }
 
-        if (
-          room.players.length >= 4
-        ) {
-          socket.emit(
-            'errorMessage',
-            'Sala cheia. Máximo de 4 jogadores.'
-          );
-
-          return;
-        }
-
-        room.players.push({
+        /*
+         * Partida já começou:
+         * entra como espectador
+         * na fila.
+         */
+        room.spectators.push({
           id: socket.id,
 
           name:
             name ||
-            'Jogador',
+            'Espectador',
 
-          hand: [],
-
-          ready: false,
-
-          resourceVote:
-            false,
+          joinedAt:
+            Date.now(),
         });
 
         emitRoom(room);
@@ -599,7 +989,15 @@ io.on(
         }
 
         if (
-          room.players.length < 2
+          room.status !==
+          'lobby'
+        ) {
+          return;
+        }
+
+        if (
+          room.players.length <
+          2
         ) {
           socket.emit(
             'errorMessage',
@@ -609,7 +1007,18 @@ io.on(
           return;
         }
 
-        startNewGame(room);
+        /*
+         * Pessoas que estavam na
+         * fila antes de começar
+         * podem entrar se houver
+         * vaga.
+         */
+        promoteSpectators(room);
+
+        startNewGame(
+          room,
+          false
+        );
 
         emitRoom(room);
       }
@@ -690,10 +1099,6 @@ io.on(
           return;
         }
 
-        /*
-         * Não deixa jogar enquanto
-         * existe votação de recurso.
-         */
         if (
           room.resourceProposal
         ) {
@@ -707,14 +1112,14 @@ io.on(
               socket.id
           );
 
+        /*
+         * Espectadores não
+         * conseguem jogar.
+         */
         if (!player) {
           return;
         }
 
-        /*
-         * Só pode jogar a menor
-         * carta da própria mão.
-         */
         if (
           player.hand[0] !==
           value
@@ -738,10 +1143,6 @@ io.on(
         if (
           lowerCards.length > 0
         ) {
-          /*
-           * Se Chance Dupla estiver
-           * ativa, protege este erro.
-           */
           if (
             room.doubleChanceActive
           ) {
@@ -760,15 +1161,10 @@ io.on(
 
           room.lives--;
 
-          /*
-           * Sem vidas:
-           * partida inteira volta
-           * para o nível 1.
-           */
           if (
             room.lives <= 0
           ) {
-            restartGameAfterLoss(
+            restartAfterLoss(
               room
             );
 
@@ -797,10 +1193,6 @@ io.on(
       }
     );
 
-    /*
-     * JOGADOR PROPÕE
-     * UMA CARTA ESPECIAL.
-     */
     socket.on(
       'proposeResource',
       ({
@@ -824,12 +1216,26 @@ io.on(
           return;
         }
 
+        /*
+         * Apenas jogadores ativos.
+         */
+        const player =
+          room.players.find(
+            (item) =>
+              item.id ===
+              socket.id
+          );
+
+        if (!player) {
+          return;
+        }
+
         if (
           room.resourceProposal
         ) {
           socket.emit(
             'errorMessage',
-            'Já existe uma votação de carta especial em andamento.'
+            'Já existe uma votação em andamento.'
           );
 
           return;
@@ -855,7 +1261,8 @@ io.on(
         }
 
         if (
-          resource === 'double' &&
+          resource ===
+            'double' &&
           room.doubleChanceActive
         ) {
           return;
@@ -866,7 +1273,8 @@ io.on(
         ) {
           const config =
             setupByPlayers(
-              room.players.length
+              room.players
+                .length
             );
 
           if (
@@ -884,33 +1292,15 @@ io.on(
 
         resetVotes(room);
 
-        const player =
-          room.players.find(
-            (item) =>
-              item.id ===
-              socket.id
-          );
-
-        if (!player) {
-          return;
-        }
-
         room.resourceProposal =
           resource;
 
-        /*
-         * Quem propõe já vota SIM.
-         */
         player.resourceVote =
           true;
 
         room.message =
           `${player.name} propôs usar ${resourceName(resource)}. Todos precisam confirmar.`;
 
-        /*
-         * Segurança para eventual
-         * partida com apenas 1 jogador.
-         */
         const everyoneVoted =
           room.players.every(
             (item) =>
@@ -930,10 +1320,6 @@ io.on(
       }
     );
 
-    /*
-     * JOGADOR CONFIRMA
-     * A PROPOSTA EXISTENTE.
-     */
     socket.on(
       'voteResource',
       (
@@ -943,13 +1329,6 @@ io.on(
           rooms.get(roomCode);
 
         if (!room) {
-          return;
-        }
-
-        if (
-          room.status !==
-          'playing'
-        ) {
           return;
         }
 
@@ -1002,10 +1381,6 @@ io.on(
       }
     );
 
-    /*
-     * QUALQUER JOGADOR PODE
-     * CANCELAR A PROPOSTA.
-     */
     socket.on(
       'cancelResource',
       (
@@ -1031,6 +1406,10 @@ io.on(
               socket.id
           );
 
+        if (!player) {
+          return;
+        }
+
         const resource =
           room.resourceProposal;
 
@@ -1040,8 +1419,134 @@ io.on(
         resetVotes(room);
 
         room.message =
-          `${player?.name || 'Um jogador'} cancelou o uso de ${resourceName(resource)}.`;
+          `${player.name} cancelou o uso de ${resourceName(resource)}.`;
 
+        emitRoom(room);
+      }
+    );
+
+    /*
+     * BOTÃO SAIR DA SALA
+     */
+    socket.on(
+      'leaveRoom',
+      (
+        roomCode: string
+      ) => {
+        const room =
+          rooms.get(roomCode);
+
+        if (!room) {
+          socket.emit(
+            'leftRoom'
+          );
+
+          return;
+        }
+
+        const removed =
+          removeFromRoom(
+            room,
+            socket.id
+          );
+
+        socket.emit(
+          'leftRoom'
+        );
+
+        if (!removed) {
+          return;
+        }
+
+        /*
+         * Sala completamente vazia.
+         */
+        if (
+          room.players.length ===
+            0 &&
+          room.spectators.length ===
+            0
+        ) {
+          rooms.delete(
+            room.code
+          );
+
+          return;
+        }
+
+        /*
+         * Se todos os jogadores
+         * ativos saíram mas ainda
+         * existem espectadores,
+         * transforma a fila em
+         * jogadores e cria uma
+         * nova partida.
+         */
+        if (
+          room.players.length ===
+            0 &&
+          room.spectators.length >
+            0
+        ) {
+          promoteSpectators(
+            room
+          );
+
+          if (
+            room.players.length >
+            0
+          ) {
+            room.hostId =
+              room.players[0].id;
+          }
+
+          if (
+            room.players.length >=
+            2
+          ) {
+            startNewGame(
+              room,
+              false
+            );
+
+            room.message =
+              'Os jogadores anteriores saíram. Uma nova partida foi preparada.';
+          } else {
+            room.status =
+              'lobby';
+
+            room.message =
+              'Aguardando mais jogadores.';
+          }
+
+          emitRoom(room);
+
+          return;
+        }
+
+        /*
+         * Se uma pessoa sair no
+         * meio da partida, não
+         * puxa alguém da fila
+         * imediatamente.
+         *
+         * A fila só entra no
+         * começo da próxima
+         * partida, como pedido.
+         */
+        room.message =
+          room.status ===
+          'lobby'
+            ? 'Um jogador saiu da sala.'
+            : 'Um jogador saiu da partida. A fila entrará somente na próxima partida.';
+
+        /*
+         * Caso só reste um jogador,
+         * ele ainda pode assistir
+         * o estado atual. A próxima
+         * partida só seguirá quando
+         * houver jogadores suficientes.
+         */
         emitRoom(room);
       }
     );
@@ -1053,75 +1558,92 @@ io.on(
           `Jogador desconectado: ${socket.id}`
         );
 
-        for (
-          const [
-            roomCode,
-            room,
-          ] of rooms
-        ) {
-          const previousCount =
-            room.players.length;
-
-          room.players =
-            room.players.filter(
-              (player) =>
-                player.id !==
-                socket.id
-            );
-
-          if (
-            room.players.length ===
-            previousCount
-          ) {
-            continue;
-          }
-
-          if (
-            room.players.length === 0
-          ) {
-            rooms.delete(
-              roomCode
-            );
-
-            continue;
-          }
-
-          if (
-            room.hostId ===
+        const room =
+          findRoomBySocket(
             socket.id
+          );
+
+        if (!room) {
+          return;
+        }
+
+        removeFromRoom(
+          room,
+          socket.id
+        );
+
+        if (
+          room.players.length ===
+            0 &&
+          room.spectators.length ===
+            0
+        ) {
+          rooms.delete(
+            room.code
+          );
+
+          return;
+        }
+
+        if (
+          room.players.length ===
+            0 &&
+          room.spectators.length >
+            0
+        ) {
+          promoteSpectators(
+            room
+          );
+
+          if (
+            room.players.length >
+            0
           ) {
             room.hostId =
               room.players[0].id;
           }
 
-          /*
-           * Se alguém sair durante
-           * votação, recalcula votos.
-           */
           if (
-            room.resourceProposal
+            room.players.length >=
+            2
           ) {
-            const everyoneVoted =
-              room.players.every(
-                (player) =>
-                  player.resourceVote
-              );
-
-            if (
-              everyoneVoted
-            ) {
-              const resource =
-                room.resourceProposal;
-
-              executeResource(
-                room,
-                resource
-              );
-            }
+            startNewGame(
+              room,
+              false
+            );
+          } else {
+            room.status =
+              'lobby';
           }
-
-          emitRoom(room);
         }
+
+        /*
+         * Se havia votação e um
+         * jogador saiu, verifica
+         * se todos os restantes
+         * já votaram.
+         */
+        if (
+          room.resourceProposal &&
+          room.players.length > 0
+        ) {
+          const everyoneVoted =
+            room.players.every(
+              (player) =>
+                player.resourceVote
+            );
+
+          if (
+            everyoneVoted
+          ) {
+            executeResource(
+              room,
+              room.resourceProposal
+            );
+          }
+        }
+
+        emitRoom(room);
       }
     );
   }
