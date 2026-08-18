@@ -4432,3 +4432,1574 @@ button:disabled {
     }
   }
 }
+
+/* =========================================================
+   AJUSTES FINAIS PARA VIEWPORT MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  /* Mantém o menu como um cartão central, inclusive em aparelhos
+     que não informam corretamente o tipo de ponteiro. */
+  .landing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:
+      max(18px, env(safe-area-inset-top))
+      14px
+      max(18px, env(safe-area-inset-bottom));
+  }
+
+  .hero {
+    width: min(100%, 390px) !important;
+    margin: auto !important;
+  }
+
+  /* Alvos de toque confortáveis e texto legível sem zoom. */
+  .hero input,
+  .hero button,
+  .panel button,
+  .special-action-mobile button {
+    min-height: 56px;
+  }
+
+  /* Quando há muitas cartas, a rolagem começa pela primeira carta
+     em vez de deixar a primeira parcialmente fora da tela. */
+  .hand:has(.number-card:nth-child(3)) {
+    justify-content: flex-start !important;
+    scroll-padding-inline: 12px;
+  }
+
+  /* Tutorial maior e centralizado, sem encostar nas bordas. */
+  .sheet {
+    width: min(calc(100vw - 24px), 520px) !important;
+    max-height: calc(100dvh - 24px) !important;
+    min-height: 0;
+    padding: 30px 22px 24px !important;
+  }
+
+  .sheet h2 {
+    font-size: 30px !important;
+  }
+
+  .sheet p,
+  .sheet li {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+  }
+
+  .sheet .note {
+    font-size: 14px !important;
+  }
+
+  .sheet > button:last-child {
+    flex: 0 0 auto;
+    min-height: 56px !important;
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero {
+    width: min(100%, 370px) !important;
+  }
+
+  /* Ainda grandes, mas dimensionadas para os três montes caberem
+     lado a lado em telas de 360 px. */
+  .level-card {
+    width: 88px !important;
+    height: 132px !important;
+  }
+
+  .played-card {
+    width: 114px !important;
+    height: 166px !important;
+  }
+
+  .discard-under {
+    width: 110px !important;
+    height: 160px !important;
+  }
+
+  .deck-stack {
+    width: 101px !important;
+    height: 154px !important;
+  }
+
+  .deck-card {
+    width: 98px !important;
+    height: 148px !important;
+  }
+
+  .number-card {
+    min-width: 128px !important;
+    width: 128px !important;
+    height: 184px !important;
+  }
+}
+
+/* =========================================================
+   MOBILE V2 — LAYOUT NATIVO PARA CELULAR
+   Coloque ESTE BLOCO no FINAL do styles.css
+========================================================= */
+
+@media
+  (max-width: 700px)
+  and (pointer: coarse) {
+
+  /* =====================================================
+     BASE
+  ===================================================== */
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* =====================================================
+     MENU PRINCIPAL
+  ===================================================== */
+
+  .landing {
+    width: 100%;
+    min-height: 100dvh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding:
+      max(20px, env(safe-area-inset-top))
+      16px
+      max(20px, env(safe-area-inset-bottom));
+
+    overflow: hidden;
+  }
+
+  /*
+    O círculo decorativo fica atrás
+    do painel, sem dominar a tela.
+  */
+  .orb {
+    width: 360px !important;
+    height: 360px !important;
+
+    max-width: 88vw !important;
+    max-height: 88vw !important;
+
+    top: 50% !important;
+    left: 50% !important;
+
+    transform:
+      translate(-50%, -52%) !important;
+  }
+
+  /*
+    MENU EM FORMATO DE PAINEL CENTRAL,
+    em vez de ocupar a tela inteira.
+  */
+  .hero {
+    width: min(92vw, 390px) !important;
+
+    margin: 0 auto !important;
+
+    padding:
+      28px
+      20px
+      24px !important;
+
+    border:
+      1px solid #253440 !important;
+
+    border-radius:
+      24px !important;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(13, 20, 28, 0.94),
+        rgba(5, 9, 13, 0.96)
+      ) !important;
+
+    box-shadow:
+      0 25px 70px #000a,
+      inset 0 1px 0 #ffffff0b !important;
+
+    backdrop-filter:
+      blur(15px);
+  }
+
+  .eyebrow {
+    font-size: 9px !important;
+
+    line-height: 1.4;
+
+    letter-spacing:
+      0.18em !important;
+  }
+
+  .hero h1 {
+    margin:
+      14px
+      0
+      9px !important;
+
+    font-size:
+      clamp(
+        46px,
+        14vw,
+        60px
+      ) !important;
+
+    line-height:
+      0.95 !important;
+  }
+
+  .hero p {
+    max-width: 320px;
+
+    margin:
+      0
+      auto
+      22px !important;
+
+    font-size:
+      13px !important;
+
+    line-height:
+      1.5 !important;
+  }
+
+  /*
+    INPUTS NÃO OCUPAM MAIS
+    UMA LARGURA EXAGERADA.
+  */
+  .hero input,
+  .join input {
+    width: 100% !important;
+
+    min-height:
+      56px !important;
+
+    margin:
+      6px
+      0 !important;
+
+    padding:
+      0
+      16px !important;
+
+    border-radius:
+      14px !important;
+
+    font-size:
+      16px !important;
+  }
+
+  /*
+    Botão principal maior,
+    confortável para toque.
+  */
+  .hero .primary {
+    width: 100% !important;
+
+    min-height:
+      58px !important;
+
+    margin:
+      7px
+      0 !important;
+
+    border-radius:
+      15px !important;
+
+    font-size:
+      16px !important;
+  }
+
+  .join {
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+      1fr !important;
+
+    gap:
+      4px !important;
+  }
+
+  .join button {
+    width: 100% !important;
+
+    min-height:
+      56px !important;
+
+    margin:
+      3px
+      0 !important;
+
+    border-radius:
+      15px !important;
+
+    font-size:
+      15px !important;
+  }
+
+  .hero .link {
+    min-height:
+      44px;
+
+    padding:
+      10px
+      18px !important;
+
+    margin-top:
+      4px;
+
+    font-size:
+      14px !important;
+  }
+
+  /* =====================================================
+     TUTORIAL MOBILE GRANDE
+  ===================================================== */
+
+  .modal {
+    padding:
+      max(12px, env(safe-area-inset-top))
+      10px
+      max(
+        12px,
+        env(safe-area-inset-bottom)
+      ) !important;
+
+    place-items:
+      center !important;
+
+    align-items:
+      center !important;
+  }
+
+  .sheet {
+    width:
+      min(94vw, 520px) !important;
+
+    max-height:
+      88dvh !important;
+
+    min-height:
+      min(72dvh, 620px);
+
+    padding:
+      28px
+      22px
+      24px !important;
+
+    border-radius:
+      24px !important;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    justify-content:
+      flex-start;
+  }
+
+  .sheet h2 {
+    margin:
+      3px
+      0
+      14px !important;
+
+    padding-right:
+      35px;
+
+    font-size:
+      30px !important;
+  }
+
+  .sheet p,
+  .sheet li {
+    font-size:
+      14px !important;
+
+    line-height:
+      1.55 !important;
+  }
+
+  .sheet ol {
+    padding-left:
+      23px !important;
+
+    margin-top:
+      8px;
+  }
+
+  .sheet li {
+    margin-bottom:
+      8px;
+  }
+
+  .sheet .note {
+    padding:
+      14px !important;
+
+    margin-top:
+      8px;
+
+    font-size:
+      13px !important;
+  }
+
+  .sheet .x {
+    width:
+      46px !important;
+
+    height:
+      46px !important;
+
+    display:
+      grid;
+
+    place-items:
+      center;
+
+    right:
+      10px !important;
+
+    top:
+      8px !important;
+
+    font-size:
+      27px !important;
+  }
+
+  .sheet > button:last-child {
+    width:
+      100% !important;
+
+    min-height:
+      56px !important;
+
+    margin-top:
+      12px !important;
+
+    font-size:
+      15px !important;
+  }
+
+  /* =====================================================
+     CABEÇALHO DA PARTIDA
+  ===================================================== */
+
+  .game {
+    width: 100%;
+
+    min-height: 100dvh;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    padding-bottom:
+      10px !important;
+  }
+
+  .game-header {
+    position:
+      sticky;
+
+    top: 0;
+
+    min-height:
+      68px !important;
+
+    padding:
+      max(
+        8px,
+        env(safe-area-inset-top)
+      )
+      10px
+      8px !important;
+
+    gap:
+      6px !important;
+  }
+
+  .room-info {
+    min-width:
+      60px;
+  }
+
+  .room-info small {
+    font-size:
+      7px !important;
+  }
+
+  .room-info strong {
+    font-size:
+      13px !important;
+
+    letter-spacing:
+      0.1em !important;
+  }
+
+  .stats {
+    flex:
+      1;
+
+    max-width:
+      none !important;
+
+    gap:
+      4px
+      8px !important;
+
+    font-size:
+      10px !important;
+  }
+
+  .header-actions {
+    gap:
+      5px !important;
+  }
+
+  /*
+    Botões do topo maiores.
+  */
+  .leave-room-button,
+  .ghost {
+    width:
+      46px !important;
+
+    height:
+      46px !important;
+
+    min-width:
+      46px !important;
+
+    min-height:
+      46px !important;
+  }
+
+  .leave-room-button {
+    padding:
+      0 !important;
+
+    border-radius:
+      50% !important;
+  }
+
+  .leave-room-button span {
+    font-size:
+      20px !important;
+  }
+
+  .leave-room-button small {
+    display:
+      none !important;
+  }
+
+  .ghost {
+    font-size:
+      18px !important;
+  }
+
+  /* =====================================================
+     JOGADORES
+  ===================================================== */
+
+  .players {
+    min-height:
+      68px;
+
+    gap:
+      8px !important;
+
+    padding:
+      9px
+      10px !important;
+
+    scroll-snap-type:
+      x proximity;
+  }
+
+  .player {
+    min-width:
+      158px !important;
+
+    padding:
+      9px
+      11px !important;
+
+    scroll-snap-align:
+      start;
+  }
+
+  .avatar {
+    width:
+      35px !important;
+
+    height:
+      35px !important;
+
+    min-width:
+      35px !important;
+
+    font-size:
+      13px !important;
+  }
+
+  .player b {
+    font-size:
+      12px !important;
+  }
+
+  .player small {
+    font-size:
+      9px !important;
+  }
+
+  /* =====================================================
+     MESA
+
+     IMPORTANTE:
+     não usamos mais altura gigantesca.
+     A mesa acompanha o conteúdo.
+  ===================================================== */
+
+  .board {
+    flex:
+      none !important;
+
+    width:
+      calc(100vw - 12px)
+      !important;
+
+    min-height:
+      0 !important;
+
+    height:
+      auto !important;
+
+    margin:
+      3px
+      auto
+      8px !important;
+
+    padding:
+      52px
+      10px
+      28px !important;
+
+    border-width:
+      5px !important;
+
+    border-radius:
+      25px !important;
+
+    display:
+      flex !important;
+
+    flex-direction:
+      column !important;
+
+    align-items:
+      center !important;
+
+    justify-content:
+      flex-start !important;
+
+    overflow:
+      hidden !important;
+  }
+
+  .board::after {
+    inset:
+      5px !important;
+
+    border-radius:
+      17px !important;
+  }
+
+  .status {
+    top:
+      15px !important;
+
+    left:
+      12px !important;
+
+    right:
+      12px !important;
+
+    font-size:
+      10px !important;
+  }
+
+  /* =====================================================
+     TRÊS ELEMENTOS PRINCIPAIS
+  ===================================================== */
+
+  .physical-table {
+    width:
+      100% !important;
+
+    min-height:
+      230px !important;
+
+    display:
+      grid !important;
+
+    grid-template-columns:
+      0.9fr
+      1.15fr
+      0.9fr
+      !important;
+
+    align-items:
+      center !important;
+
+    justify-items:
+      center !important;
+
+    gap:
+      6px !important;
+
+    margin:
+      4px
+      auto
+      8px !important;
+  }
+
+  .level-area,
+  .discard-area,
+  .deck-area {
+    min-width:
+      0 !important;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+  }
+
+  /* =====================================================
+     CARTA DE NÍVEL
+  ===================================================== */
+
+  .level-card {
+    width:
+      98px !important;
+
+    height:
+      145px !important;
+
+    border-width:
+      2px !important;
+
+    border-radius:
+      7px !important;
+  }
+
+  .level-card span {
+    font-size:
+      7px !important;
+  }
+
+  .level-card strong {
+    font-size:
+      58px !important;
+  }
+
+  .level-card small {
+    font-size:
+      7px !important;
+  }
+
+  /* =====================================================
+     CARTA CENTRAL MAIOR
+  ===================================================== */
+
+  .discard-area {
+    min-height:
+      210px !important;
+  }
+
+  .played-card {
+    width:
+      125px !important;
+
+    height:
+      181px !important;
+
+    border-width:
+      2px !important;
+
+    border-radius:
+      8px !important;
+  }
+
+  .discard-under {
+    width:
+      120px !important;
+
+    height:
+      175px !important;
+  }
+
+  .played-art strong {
+    font-size:
+      58px !important;
+  }
+
+  .played-corner {
+    font-size:
+      15px !important;
+  }
+
+  .played-art::before {
+    width:
+      124px !important;
+
+    height:
+      124px !important;
+  }
+
+  .played-art::after {
+    width:
+      78px !important;
+
+    height:
+      78px !important;
+  }
+
+  /* =====================================================
+     BARALHO MAIOR
+  ===================================================== */
+
+  .deck-area {
+    min-height:
+      210px !important;
+  }
+
+  .deck-stack {
+    width:
+      112px !important;
+
+    height:
+      166px !important;
+
+    transform:
+      rotate(2deg)
+      perspective(800px)
+      rotateY(-2deg)
+      !important;
+  }
+
+  .deck-card {
+    width:
+      108px !important;
+
+    height:
+      158px !important;
+
+    border-width:
+      2px !important;
+
+    border-radius:
+      7px !important;
+  }
+
+  .deck-card-5 {
+    left:
+      -7px !important;
+
+    top:
+      7px !important;
+  }
+
+  .deck-card-4 {
+    left:
+      -5px !important;
+
+    top:
+      5px !important;
+  }
+
+  .deck-card-3 {
+    left:
+      -3px !important;
+
+    top:
+      3px !important;
+  }
+
+  .deck-card-2 {
+    left:
+      -1px !important;
+
+    top:
+      1px !important;
+  }
+
+  .deck-pattern::before {
+    width:
+      77px !important;
+
+    height:
+      77px !important;
+  }
+
+  .deck-orbit {
+    width:
+      90px !important;
+
+    height:
+      36px !important;
+  }
+
+  .deck-star {
+    font-size:
+      20px !important;
+  }
+
+  .deck-pattern strong {
+    font-size:
+      12px !important;
+  }
+
+  .deck-pattern small {
+    font-size:
+      6px !important;
+  }
+
+  .table-label {
+    margin-top:
+      8px !important;
+
+    font-size:
+      6px !important;
+  }
+
+  /* =====================================================
+     SUA MÃO
+  ===================================================== */
+
+  .hand-section {
+    width:
+      100% !important;
+
+    margin-top:
+      10px !important;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+  }
+
+  .hand-title {
+    margin-bottom:
+      7px !important;
+  }
+
+  .hand-title > span {
+    font-size:
+      9px !important;
+  }
+
+  .hand-title small {
+    font-size:
+      9px !important;
+  }
+
+  .hand {
+    width:
+      100% !important;
+
+    display:
+      flex !important;
+
+    align-items:
+      center !important;
+
+    /*
+      1, 2 ou 3 cartas ficam
+      realmente centralizadas.
+    */
+    justify-content:
+      center !important;
+
+    gap:
+      10px !important;
+
+    padding:
+      6px
+      8px
+      10px !important;
+
+    overflow-x:
+      auto;
+
+    scroll-snap-type:
+      x mandatory;
+  }
+
+  /*
+    CARTA DA MÃO MAIOR
+  */
+  .number-card {
+    min-width:
+      132px !important;
+
+    width:
+      132px !important;
+
+    height:
+      190px !important;
+
+    border-width:
+      2px !important;
+
+    border-radius:
+      8px !important;
+
+    scroll-snap-align:
+      center;
+  }
+
+  .card-art strong {
+    font-size:
+      60px !important;
+  }
+
+  .card-art::before {
+    width:
+      127px !important;
+
+    height:
+      127px !important;
+  }
+
+  .card-art::after {
+    width:
+      80px !important;
+
+    height:
+      80px !important;
+  }
+
+  .card-corner {
+    font-size:
+      15px !important;
+  }
+
+  .card-symbol {
+    font-size:
+      17px !important;
+  }
+
+  .card-action {
+    font-size:
+      6px !important;
+  }
+
+  /* =====================================================
+     BOTÃO CARTAS ESPECIAIS
+  ===================================================== */
+
+  .special-action-mobile {
+    width:
+      100% !important;
+
+    display:
+      flex !important;
+
+    justify-content:
+      center !important;
+
+    margin:
+      8px
+      0
+      0 !important;
+  }
+
+  .special-action-mobile button {
+    width:
+      min(92%, 380px)
+      !important;
+
+    min-height:
+      56px !important;
+
+    padding:
+      12px
+      18px !important;
+
+    border-radius:
+      999px !important;
+
+    font-size:
+      14px !important;
+  }
+
+  /* =====================================================
+     CARTAS ESPECIAIS DO CANTO
+  ===================================================== */
+
+  .power-dock {
+    right:
+      8px !important;
+
+    top:
+      54px !important;
+
+    transform:
+      none !important;
+
+    gap:
+      4px !important;
+
+    padding:
+      5px !important;
+  }
+
+  .mini-power-card {
+    width:
+      50px !important;
+
+    height:
+      68px !important;
+  }
+
+  .mini-power-card span {
+    font-size:
+      24px !important;
+  }
+
+  /* =====================================================
+     LOBBY / READY
+  ===================================================== */
+
+  .panel {
+    width:
+      min(94%, 390px)
+      !important;
+
+    margin:
+      10px
+      auto
+      0 !important;
+
+    padding:
+      0
+      6px !important;
+  }
+
+  .panel h2 {
+    margin:
+      4px
+      0
+      7px !important;
+
+    font-size:
+      25px !important;
+  }
+
+  .panel p {
+    margin:
+      5px
+      0
+      13px !important;
+
+    font-size:
+      13px !important;
+
+    line-height:
+      1.45 !important;
+  }
+
+  /*
+    INICIAR PARTIDA / ESTOU PRONTO
+  */
+  .primary,
+  .panel .primary {
+    width:
+      100% !important;
+
+    min-height:
+      58px !important;
+
+    padding:
+      14px
+      18px !important;
+
+    border-radius:
+      15px !important;
+
+    font-size:
+      16px !important;
+  }
+
+  /* =====================================================
+     MODAL CARTAS ESPECIAIS
+  ===================================================== */
+
+  .power-sheet {
+    width:
+      min(94vw, 520px)
+      !important;
+
+    max-height:
+      90dvh !important;
+
+    padding:
+      27px
+      14px
+      20px !important;
+
+    border-radius:
+      24px !important;
+  }
+
+  .power-modal-heading h2 {
+    font-size:
+      28px !important;
+  }
+
+  .power-modal-heading p {
+    font-size:
+      12px !important;
+  }
+
+  .power-grid {
+    gap:
+      8px !important;
+  }
+
+  .power-card-big {
+    min-height:
+      190px !important;
+
+    padding:
+      8px !important;
+  }
+
+  .power-card-symbol {
+    font-size:
+      48px !important;
+  }
+
+  .power-card-big strong {
+    font-size:
+      12px !important;
+  }
+
+  .power-modal-actions button {
+    min-height:
+      56px !important;
+
+    font-size:
+      14px !important;
+  }
+
+  /* =====================================================
+     SAIR DA SALA
+  ===================================================== */
+
+  .leave-sheet {
+    width:
+      min(92vw, 430px)
+      !important;
+
+    padding:
+      28px
+      20px !important;
+
+    border-radius:
+      23px !important;
+  }
+
+  .leave-sheet h2 {
+    font-size:
+      27px !important;
+  }
+
+  .leave-sheet p {
+    font-size:
+      14px !important;
+  }
+
+  .leave-actions {
+    grid-template-columns:
+      1fr !important;
+  }
+
+  .leave-actions button {
+    min-height:
+      56px !important;
+
+    font-size:
+      14px !important;
+  }
+
+  /* =====================================================
+     ESPECTADOR
+
+     Aqui permitimos crescimento,
+     porque pode haver várias mãos.
+  ===================================================== */
+
+  .board:has(.spectator-section) {
+    min-height:
+      0 !important;
+
+    height:
+      auto !important;
+
+    justify-content:
+      flex-start !important;
+
+    overflow:
+      visible !important;
+  }
+}
+
+/* =========================================================
+   CELULARES MAIS ESTREITOS
+   Ex.: 360px / 375px
+========================================================= */
+
+@media
+  (max-width: 390px)
+  and (pointer: coarse) {
+
+  .hero {
+    width:
+      calc(100vw - 24px)
+      !important;
+
+    padding:
+      24px
+      16px
+      20px !important;
+  }
+
+  .physical-table {
+    gap:
+      3px !important;
+  }
+
+  .level-card {
+    width:
+      86px !important;
+
+    height:
+      128px !important;
+  }
+
+  .played-card {
+    width:
+      112px !important;
+
+    height:
+      163px !important;
+  }
+
+  .discard-under {
+    width:
+      108px !important;
+
+    height:
+      157px !important;
+  }
+
+  .deck-stack {
+    width:
+      99px !important;
+
+    height:
+      151px !important;
+  }
+
+  .deck-card {
+    width:
+      96px !important;
+
+    height:
+      145px !important;
+  }
+
+  .number-card {
+    min-width:
+      124px !important;
+
+    width:
+      124px !important;
+
+    height:
+      179px !important;
+  }
+
+  .card-art strong {
+    font-size:
+      56px !important;
+  }
+}
+
+/* =========================================================
+   IPHONE / SAFARI
+========================================================= */
+
+@supports (-webkit-touch-callout: none) {
+
+  @media (max-width: 700px) {
+
+    html,
+    body,
+    #root {
+      min-height:
+        -webkit-fill-available;
+    }
+
+    .landing,
+    .game {
+      min-height:
+        100dvh;
+    }
+
+    /*
+      Não força mais a mesa
+      a preencher toda a altura.
+    */
+    .board {
+      flex:
+        none !important;
+
+      min-height:
+        0 !important;
+
+      height:
+        auto !important;
+    }
+  }
+}
+
+/* As regras abaixo ficam por último para vencer os ajustes legados. */
+@media (max-width: 700px) {
+  .landing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:
+      max(18px, env(safe-area-inset-top))
+      14px
+      max(18px, env(safe-area-inset-bottom));
+  }
+
+  .hero {
+    width: min(100%, 390px) !important;
+    margin: auto !important;
+  }
+
+  .hero input,
+  .hero button,
+  .panel button,
+  .special-action-mobile button {
+    min-height: 56px;
+  }
+
+  .hand:has(.number-card:nth-child(3)) {
+    justify-content: flex-start !important;
+    scroll-padding-inline: 12px;
+  }
+
+  .sheet {
+    width: min(calc(100vw - 24px), 520px) !important;
+    max-height: calc(100dvh - 24px) !important;
+    min-height: 0;
+    padding: 30px 22px 24px !important;
+  }
+
+  .sheet h2 {
+    font-size: 30px !important;
+  }
+
+  .sheet p,
+  .sheet li {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+  }
+
+  .sheet .note {
+    font-size: 14px !important;
+  }
+
+  .sheet > button:last-child {
+    flex: 0 0 auto;
+    min-height: 56px !important;
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero {
+    width: min(100%, 370px) !important;
+  }
+
+  .level-card {
+    width: 88px !important;
+    height: 132px !important;
+  }
+
+  .played-card {
+    width: 114px !important;
+    height: 166px !important;
+  }
+
+  .discard-under {
+    width: 110px !important;
+    height: 160px !important;
+  }
+
+  .deck-stack {
+    width: 101px !important;
+    height: 154px !important;
+  }
+
+  .deck-card {
+    width: 98px !important;
+    height: 148px !important;
+  }
+
+  .number-card {
+    min-width: 128px !important;
+    width: 128px !important;
+    height: 184px !important;
+  }
+}
